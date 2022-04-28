@@ -55,6 +55,12 @@ build CMakeFiles/RT.dir/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionPr
   OBJECT_DIR = CMakeFiles/RT.dir
   OBJECT_FILE_DIR = CMakeFiles/RT.dir
 
+build CMakeFiles/RT.dir/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/RT/tinyxml2.cpp || cmake_object_order_depends_target_RT
+  DEP_FILE = CMakeFiles/RT.dir/tinyxml2.cpp.o.d
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles/RT.dir
+  OBJECT_FILE_DIR = CMakeFiles/RT.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target RT
@@ -63,7 +69,7 @@ build CMakeFiles/RT.dir/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionPr
 #############################################
 # Link the executable RT
 
-build RT: CXX_EXECUTABLE_LINKER__RT_Debug CMakeFiles/RT.dir/main.cpp.o
+build RT: CXX_EXECUTABLE_LINKER__RT_Debug CMakeFiles/RT.dir/main.cpp.o CMakeFiles/RT.dir/tinyxml2.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/RT.dir
   POST_BUILD = :

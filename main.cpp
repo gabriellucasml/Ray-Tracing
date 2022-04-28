@@ -1,8 +1,11 @@
 #include "color.h"
 #include "ray.h"
 #include "vec3.h"
+#include "parcer.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 color ray_color(const ray& r, color tr, color tl, color br, color bl) {
     vec3 unit_direction = unit_vector(r.direction());
@@ -14,7 +17,7 @@ color ray_color(const ray& r, color tr, color tl, color br, color bl) {
 }
 
 int main(int argc, char* argv[]) {
-
+    struct RunningOptions ro = Parser::parse(argc, argv);
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
     const int image_width = 1920;
@@ -32,8 +35,12 @@ int main(int argc, char* argv[]) {
     auto lower_left_corner = origin - horizontal/2 - vertical/2 - vec3(0, 0, focal_length);
 
     // Render
-
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+    std::ofstream file;
+    std::stringstream fileName;
+    fileName << ro.filmFilename << "." << ro.filmImgtype;
+    std::string placeholder = fileName.str();
+    file.open(placeholder);
+    file << "P3\n" << image_width << " " << image_height << "\n255\n";
 
     for (int j = image_height-1; j >= 0; --j) {
         std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
@@ -41,10 +48,11 @@ int main(int argc, char* argv[]) {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixel_color = ray_color(r);
-            write_color(std::cout, pixel_color);
+            color pixel_color = ray_color(r, color(1,0,0),color(0,1,0),color(0,0,1),color(1,1,0));
+            write_color(file, pixel_color);
         }
     }
+    file.close();
 
     std::cerr << "\nDone.\n";
 }
