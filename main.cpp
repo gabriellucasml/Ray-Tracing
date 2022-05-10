@@ -17,7 +17,16 @@ color ray_color(const ray& r, color tr, color tl, color br, color bl) {
 }
 
 int main(int argc, char* argv[]) {
-    struct RunningOptions ro = Parser::parse(argc, argv);
+    struct RunningOptions ro;
+    try {
+        ro = Parser::parse(argc, argv);
+    }catch(std::exception& e){
+        std::cout << e.what() << std::endl;
+        return -1;
+    }
+    if(ro.help){
+        return 0;
+    }
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
     const int image_width = 1920;
