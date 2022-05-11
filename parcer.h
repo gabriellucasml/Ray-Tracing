@@ -70,11 +70,13 @@ public:
                             if (background->Attribute("color")) {
                                 std::string aux = background->Attribute("color");
                                 color c(0,0,0);
-                                std::stringstream aux2;
-                                for(int i = 0; i < 2; i++){
-                                    aux2 << aux;
+                                char *token = std::strtok(const_cast<char *>(aux.c_str()), " ");
+                                int i = 0;
+                                while(token != nullptr){
                                     try {
-                                        c[i] = std::stoi(aux2.str());
+                                        c[i] = std::stoi(token);
+                                        token = std::strtok(nullptr, " ");
+                                        i++;
                                     }catch(std::exception& e){
                                         std::cout << "Failed to convert color vector. Setting default value" << std::endl;
                                     }
@@ -87,17 +89,19 @@ public:
                             } else {
                                 std::string auxbl = background->Attribute("bl"), auxbr = background->Attribute("br"), auxtl = background->Attribute("tl"), auxtr = background->Attribute("tr");
                                 color bl(0,0,0),tl(0,0,0),br(0,0,0),tr(0,0,0);
-                                std::stringstream sAuxBl, sAuxBr,sAuxTl,sAuxTr;
-                                for(int i = 0; i < 2; i++){
-                                    sAuxBl << auxbl;
-                                    sAuxBr << auxbr;
-                                    sAuxTl << auxtl;
-                                    sAuxTr << auxtr;
+                                char *tokenBl = std::strtok(const_cast<char*>(auxbl.c_str()), " "),*tokenBr = std::strtok(const_cast<char*>(auxbr.c_str()), " "),*tokenTl = std::strtok(const_cast<char*>(auxtl.c_str()), " "),*tokenTr = std::strtok(const_cast<char*>(auxtr.c_str()), " ");
+                                int i = 0;
+                                while(tokenBl != nullptr & tokenBr != nullptr & tokenTl != nullptr & tokenTr != nullptr){
                                     try {
-                                        bl[i] = std::stoi(sAuxBl.str());
-                                        br[i] = std::stoi(sAuxBr.str());
-                                        tl[i] = std::stoi(sAuxTl.str());
-                                        tr[i] = std::stoi(sAuxTr.str());
+                                        bl[i] = std::stoi(tokenBl);
+                                        br[i] = std::stoi(tokenBr);
+                                        tl[i] = std::stoi(tokenTl);
+                                        tr[i] = std::stoi(tokenTr);
+                                        tokenBl = std::strtok(nullptr, " ");
+                                        tokenBr = std::strtok(nullptr, " ");
+                                        tokenTl = std::strtok(nullptr, " ");
+                                        tokenTr = std::strtok(nullptr, " ");
+                                        i++;
                                     }catch(std::exception& e){
                                         std::cout << "Failed to convert color vectors. Setting default value" << std::endl;
                                     }

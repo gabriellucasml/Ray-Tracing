@@ -1,4 +1,4 @@
-# Install script for directory: /home/gabriellucasml/CLionProjects/Ray-Tracing
+# Install script for directory: /home/gabriel.medeiros.703/CLionProjects/Ray-Tracing
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/gabriellucasml/CLionProjects/Ray-Tracing/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/gabriel.medeiros.703/CLionProjects/Ray-Tracing/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
