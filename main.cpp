@@ -5,7 +5,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 
 color ray_color(const ray& r, color tr, color tl, color br, color bl) {
     vec3 unit_direction = unit_vector(r.direction());

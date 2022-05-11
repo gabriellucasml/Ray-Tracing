@@ -36,7 +36,7 @@ public:
             switch(argc){
                 case 2:
                     if(strcmp(argv[1],"--help") == 0){
-                        std::cout << "Usage: RT [<options>] \"input_scene_file>\"\nRendering simulation options:\n\t--help                     Print this help text.\n\t--cropwindow x0,x1,y0,y1   Specify an image crop window.\n\t--quick                    Reduces quality parameters to render image quickly.\n\t--outfile <filename>       Write the rendered image to <filename>." << std::endl;
+                        std::cout << "Usage: RT [<options>] \"input_scene_file\"\nRendering simulation options:\n\t--help                     Print this help text.\n\t--cropwindow x0,x1,y0,y1   Specify an image crop window.\n\t--quick                    Reduces quality parameters to render image quickly.\n\t--outfile <filename>       Write the rendered image to <filename>." << std::endl;
                         ro.help = true;
                         return ro;
                     }else if(strcmp(argv[1],"--quick") == 0 or strcmp(argv[1],"--cropWindow") == 0 or strcmp(argv[1], "--outfile") == 0){
@@ -68,24 +68,44 @@ public:
                             ro.backgroundType = background->Attribute("type");
                             ro.backgroundMapping = background->Attribute("mapping");
                             if (background->Attribute("color")) {
-                                auto *aux = new std::stringstream();
-                                aux->str(background->Attribute("color"));
-                                color c;
-                                std::string aux2;
+                                std::string aux = background->Attribute("color");
+                                color c(0,0,0);
+                                std::stringstream aux2;
                                 for(int i = 0; i < 2; i++){
                                     aux2 << aux;
-                                    c[i] = std::stoi(aux2);
+                                    try {
+                                        c[i] = std::stoi(aux2.str());
+                                    }catch(std::exception& e){
+                                        std::cout << "Failed to convert color vector. Setting default value" << std::endl;
+                                    }
                                 }
-                                ro.backgroundColor = background->Attribute("color");
-                                ro.backgroundBl = background->Attribute("color");
-                                ro.backgroundBr = background->Attribute("color");
-                                ro.backgroundTl = background->Attribute("color");
-                                ro.backgroundTr = background->Attribute("color");
+                                ro.backgroundColor = c;
+                                ro.backgroundBl = c;
+                                ro.backgroundBr = c;
+                                ro.backgroundTl = c;
+                                ro.backgroundTr = c;
                             } else {
-                                ro.backgroundBl = background->Attribute("bl");
-                                ro.backgroundBr = background->Attribute("br");
-                                ro.backgroundTl = background->Attribute("tl");
-                                ro.backgroundTr = background->Attribute("tr");
+                                std::string auxbl = background->Attribute("bl"), auxbr = background->Attribute("br"), auxtl = background->Attribute("tl"), auxtr = background->Attribute("tr");
+                                color bl(0,0,0),tl(0,0,0),br(0,0,0),tr(0,0,0);
+                                std::stringstream sAuxBl, sAuxBr,sAuxTl,sAuxTr;
+                                for(int i = 0; i < 2; i++){
+                                    sAuxBl << auxbl;
+                                    sAuxBr << auxbr;
+                                    sAuxTl << auxtl;
+                                    sAuxTr << auxtr;
+                                    try {
+                                        bl[i] = std::stoi(sAuxBl.str());
+                                        br[i] = std::stoi(sAuxBr.str());
+                                        tl[i] = std::stoi(sAuxTl.str());
+                                        tr[i] = std::stoi(sAuxTr.str());
+                                    }catch(std::exception& e){
+                                        std::cout << "Failed to convert color vectors. Setting default value" << std::endl;
+                                    }
+                                }
+                                ro.backgroundBl = bl;
+                                ro.backgroundBr = br;
+                                ro.backgroundTl = tl;
+                                ro.backgroundTr = tr;
                             }
                             return ro;
                         }else{
