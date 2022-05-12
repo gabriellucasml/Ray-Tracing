@@ -1,0 +1,2182 @@
+Index: main.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#include \"color.h\"\n#include \"ray.h\"\n#include \"vec3.h\"\n#include \"parcer.h\"\n\n#include <iostream>\n#include <fstream>\n#include <sstream>\n\ncolor ray_color(const ray& r, color tr, color tl, color br, color bl) {\n    vec3 unit_direction = unit_vector(r.direction());\n    auto t = 0.5*(unit_direction.y() + 1.0);\n    color c1 = (1.0-t)*br + t*tr;\n    color c2 = (1.0-t)*bl + t*tl;\n    auto h = 0.5*(unit_direction.x() + 1.0);\n    return (1.0-h)*c1 + h*c2;\n}\n\nint main(int argc, char* argv[]) {\n    struct RunningOptions ro = Parser::parse(argc, argv);\n    // Image\n    const auto aspect_ratio = 16.0 / 9.0;\n    const int image_width = 1920;\n    const int image_height = static_cast<int>(image_width / aspect_ratio);\n\n    // Camera\n\n    auto viewport_height = 2.0;\n    auto viewport_width = aspect_ratio * viewport_height;\n    auto focal_length = 1.0;\n\n    auto origin = point3(0, 0, 0);\n    auto horizontal = vec3(viewport_width, 0, 0);\n    auto vertical = vec3(0, viewport_height, 0);\n    auto lower_left_corner = origin - horizontal/2 - vertical/2 - vec3(0, 0, focal_length);\n\n    // Render\n    std::ofstream file;\n    std::stringstream fileName;\n    fileName << ro.filmFilename << \".\" << ro.filmImgtype;\n    std::string placeholder = fileName.str();\n    file.open(placeholder);\n    file << \"P3\\n\" << image_width << \" \" << image_height << \"\\n255\\n\";\n\n    for (int j = image_height-1; j >= 0; --j) {\n        std::cerr << \"\\rScanlines remaining: \" << j << ' ' << std::flush;\n        for (int i = 0; i < image_width; ++i) {\n            auto u = double(i) / (image_width-1);\n            auto v = double(j) / (image_height-1);\n            ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);\n            color pixel_color = ray_color(r, color(1,0,0),color(0,1,0),color(0,0,1),color(1,1,0));\n            write_color(file, pixel_color);\n        }\n    }\n    file.close();\n\n    std::cerr << \"\\nDone.\\n\";\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.cpp b/main.cpp
+--- a/main.cpp	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/main.cpp	(date 1652234324942)
+@@ -1,11 +1,10 @@
+ #include "color.h"
+ #include "ray.h"
+ #include "vec3.h"
+-#include "parcer.h"
++#include "parser.h"
+ 
+ #include <iostream>
+ #include <fstream>
+-#include <sstream>
+ 
+ color ray_color(const ray& r, color tr, color tl, color br, color bl) {
+     vec3 unit_direction = unit_vector(r.direction());
+@@ -17,7 +16,16 @@
+ }
+ 
+ int main(int argc, char* argv[]) {
+-    struct RunningOptions ro = Parser::parse(argc, argv);
++    struct RunningOptions ro;
++    try {
++        ro = Parser::parse(argc, argv);
++    }catch(std::exception& e){
++        std::cout << e.what() << std::endl;
++        return -1;
++    }
++    if(ro.help){
++        return 0;
++    }
+     // Image
+     const auto aspect_ratio = 16.0 / 9.0;
+     const int image_width = 1920;
+Index: cmake-build-debug/.cmake/api/v1/reply/cache-v2-32b4dc580b2f801d1bea.json
+===================================================================
+diff --git a/cmake-build-debug/.cmake/api/v1/reply/cache-v2-32b4dc580b2f801d1bea.json b/cmake-build-debug/.cmake/api/v1/reply/cache-v2-32b4dc580b2f801d1bea.json
+deleted file mode 100644
+--- a/cmake-build-debug/.cmake/api/v1/reply/cache-v2-32b4dc580b2f801d1bea.json	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ /dev/null	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
+@@ -1,1159 +0,0 @@
+-{
+-	"entries" : 
+-	[
+-		{
+-			"name" : "CMAKE_ADDR2LINE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/addr2line"
+-		},
+-		{
+-			"name" : "CMAKE_AR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/ar"
+-		},
+-		{
+-			"name" : "CMAKE_BUILD_TYPE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel ..."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "Debug"
+-		},
+-		{
+-			"name" : "CMAKE_CACHEFILE_DIR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "This is the directory where this CMakeCache.txt was created"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/home/gabriel/CLionProjects/RT/cmake-build-debug"
+-		},
+-		{
+-			"name" : "CMAKE_CACHE_MAJOR_VERSION",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Major version of cmake used to create the current loaded cache"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "3"
+-		},
+-		{
+-			"name" : "CMAKE_CACHE_MINOR_VERSION",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Minor version of cmake used to create the current loaded cache"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "22"
+-		},
+-		{
+-			"name" : "CMAKE_CACHE_PATCH_VERSION",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Patch version of cmake used to create the current loaded cache"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "3"
+-		},
+-		{
+-			"name" : "CMAKE_COMMAND",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to CMake executable."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/snap/clion/189/bin/cmake/linux/bin/cmake"
+-		},
+-		{
+-			"name" : "CMAKE_CPACK_COMMAND",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to cpack program executable."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/snap/clion/189/bin/cmake/linux/bin/cpack"
+-		},
+-		{
+-			"name" : "CMAKE_CTEST_COMMAND",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to ctest program executable."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/snap/clion/189/bin/cmake/linux/bin/ctest"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_COMPILER",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "CXX compiler"
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/c++"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_COMPILER_AR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/gcc-ar-9"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_COMPILER_RANLIB",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/gcc-ranlib-9"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_FLAGS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the CXX compiler during all build types."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_CXX_FLAGS_DEBUG",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the CXX compiler during DEBUG builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-g"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_FLAGS_MINSIZEREL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the CXX compiler during MINSIZEREL builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-Os -DNDEBUG"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_FLAGS_RELEASE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the CXX compiler during RELEASE builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-O3 -DNDEBUG"
+-		},
+-		{
+-			"name" : "CMAKE_CXX_FLAGS_RELWITHDEBINFO",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the CXX compiler during RELWITHDEBINFO builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-O2 -g -DNDEBUG"
+-		},
+-		{
+-			"name" : "CMAKE_C_COMPILER",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "C compiler"
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/cc"
+-		},
+-		{
+-			"name" : "CMAKE_C_COMPILER_AR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/gcc-ar-9"
+-		},
+-		{
+-			"name" : "CMAKE_C_COMPILER_RANLIB",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/gcc-ranlib-9"
+-		},
+-		{
+-			"name" : "CMAKE_C_FLAGS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the C compiler during all build types."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_C_FLAGS_DEBUG",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the C compiler during DEBUG builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-g"
+-		},
+-		{
+-			"name" : "CMAKE_C_FLAGS_MINSIZEREL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the C compiler during MINSIZEREL builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-Os -DNDEBUG"
+-		},
+-		{
+-			"name" : "CMAKE_C_FLAGS_RELEASE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the C compiler during RELEASE builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-O3 -DNDEBUG"
+-		},
+-		{
+-			"name" : "CMAKE_C_FLAGS_RELWITHDEBINFO",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the C compiler during RELWITHDEBINFO builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : "-O2 -g -DNDEBUG"
+-		},
+-		{
+-			"name" : "CMAKE_DLLTOOL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "CMAKE_DLLTOOL-NOTFOUND"
+-		},
+-		{
+-			"name" : "CMAKE_EDIT_COMMAND",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to cache edit program executable."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/snap/clion/189/bin/cmake/linux/bin/ccmake"
+-		},
+-		{
+-			"name" : "CMAKE_EXECUTABLE_FORMAT",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Executable file format"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "ELF"
+-		},
+-		{
+-			"name" : "CMAKE_EXE_LINKER_FLAGS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during all build types."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_EXE_LINKER_FLAGS_DEBUG",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during DEBUG builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during MINSIZEREL builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_EXE_LINKER_FLAGS_RELEASE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during RELEASE builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during RELWITHDEBINFO builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_EXPORT_COMPILE_COMMANDS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Enable/Disable output of compile commands during generation."
+-				}
+-			],
+-			"type" : "BOOL",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_EXTRA_GENERATOR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Name of external makefile project generator."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_GENERATOR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Name of generator."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "Ninja"
+-		},
+-		{
+-			"name" : "CMAKE_GENERATOR_INSTANCE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Generator instance identifier."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_GENERATOR_PLATFORM",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Name of generator platform."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_GENERATOR_TOOLSET",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Name of generator toolset."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_HOME_DIRECTORY",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Source directory with the top level CMakeLists.txt file for this project"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/home/gabriel/CLionProjects/RT"
+-		},
+-		{
+-			"name" : "CMAKE_INSTALL_PREFIX",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Install path prefix, prepended onto install directories."
+-				}
+-			],
+-			"type" : "PATH",
+-			"value" : "/usr/local"
+-		},
+-		{
+-			"name" : "CMAKE_INSTALL_SO_NO_EXE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Install .so files without execute permission."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "1"
+-		},
+-		{
+-			"name" : "CMAKE_LINKER",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/ld"
+-		},
+-		{
+-			"name" : "CMAKE_MAKE_PROGRAM",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "No help, variable specified on the command line."
+-				}
+-			],
+-			"type" : "UNINITIALIZED",
+-			"value" : "/snap/clion/189/bin/ninja/linux/ninja"
+-		},
+-		{
+-			"name" : "CMAKE_MODULE_LINKER_FLAGS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of modules during all build types."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_MODULE_LINKER_FLAGS_DEBUG",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of modules during DEBUG builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of modules during MINSIZEREL builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_MODULE_LINKER_FLAGS_RELEASE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of modules during RELEASE builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of modules during RELWITHDEBINFO builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_NM",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/nm"
+-		},
+-		{
+-			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "number of local generators"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "1"
+-		},
+-		{
+-			"name" : "CMAKE_OBJCOPY",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/objcopy"
+-		},
+-		{
+-			"name" : "CMAKE_OBJDUMP",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/objdump"
+-		},
+-		{
+-			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Platform information initialized"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "1"
+-		},
+-		{
+-			"name" : "CMAKE_PROJECT_DESCRIPTION",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Value Computed by CMake"
+-				}
+-			],
+-			"type" : "STATIC",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_PROJECT_HOMEPAGE_URL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Value Computed by CMake"
+-				}
+-			],
+-			"type" : "STATIC",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_PROJECT_NAME",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Value Computed by CMake"
+-				}
+-			],
+-			"type" : "STATIC",
+-			"value" : "RT"
+-		},
+-		{
+-			"name" : "CMAKE_RANLIB",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/ranlib"
+-		},
+-		{
+-			"name" : "CMAKE_READELF",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/readelf"
+-		},
+-		{
+-			"name" : "CMAKE_ROOT",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to CMake installation."
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22"
+-		},
+-		{
+-			"name" : "CMAKE_SHARED_LINKER_FLAGS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of shared libraries during all build types."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_SHARED_LINKER_FLAGS_DEBUG",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of shared libraries during DEBUG builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of shared libraries during MINSIZEREL builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_SHARED_LINKER_FLAGS_RELEASE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of shared libraries during RELEASE builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of shared libraries during RELWITHDEBINFO builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_SKIP_INSTALL_RPATH",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "If set, runtime paths are not added when installing shared libraries, but are added when building."
+-				}
+-			],
+-			"type" : "BOOL",
+-			"value" : "NO"
+-		},
+-		{
+-			"name" : "CMAKE_SKIP_RPATH",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "If set, runtime paths are not added when using shared libraries."
+-				}
+-			],
+-			"type" : "BOOL",
+-			"value" : "NO"
+-		},
+-		{
+-			"name" : "CMAKE_STATIC_LINKER_FLAGS",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of static libraries during all build types."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_STATIC_LINKER_FLAGS_DEBUG",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of static libraries during DEBUG builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of static libraries during MINSIZEREL builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_STATIC_LINKER_FLAGS_RELEASE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of static libraries during RELEASE builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Flags used by the linker during the creation of static libraries during RELWITHDEBINFO builds."
+-				}
+-			],
+-			"type" : "STRING",
+-			"value" : ""
+-		},
+-		{
+-			"name" : "CMAKE_STRIP",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Path to a program."
+-				}
+-			],
+-			"type" : "FILEPATH",
+-			"value" : "/usr/bin/strip"
+-		},
+-		{
+-			"name" : "CMAKE_UNAME",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "uname command"
+-				}
+-			],
+-			"type" : "INTERNAL",
+-			"value" : "/usr/bin/uname"
+-		},
+-		{
+-			"name" : "CMAKE_VERBOSE_MAKEFILE",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "ADVANCED",
+-					"value" : "1"
+-				},
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "If this value is on, makefiles will be generated without the .SILENT directive, and all commands will be echoed to the console during the make.  This is useful for debugging only. With Visual Studio IDE projects all commands are done without /nologo."
+-				}
+-			],
+-			"type" : "BOOL",
+-			"value" : "FALSE"
+-		},
+-		{
+-			"name" : "RT_BINARY_DIR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Value Computed by CMake"
+-				}
+-			],
+-			"type" : "STATIC",
+-			"value" : "/home/gabriel/CLionProjects/RT/cmake-build-debug"
+-		},
+-		{
+-			"name" : "RT_IS_TOP_LEVEL",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Value Computed by CMake"
+-				}
+-			],
+-			"type" : "STATIC",
+-			"value" : "ON"
+-		},
+-		{
+-			"name" : "RT_SOURCE_DIR",
+-			"properties" : 
+-			[
+-				{
+-					"name" : "HELPSTRING",
+-					"value" : "Value Computed by CMake"
+-				}
+-			],
+-			"type" : "STATIC",
+-			"value" : "/home/gabriel/CLionProjects/RT"
+-		}
+-	],
+-	"kind" : "cache",
+-	"version" : 
+-	{
+-		"major" : 2,
+-		"minor" : 0
+-	}
+-}
+Index: parcer.h
+===================================================================
+diff --git a/parcer.h b/parcer.h
+deleted file mode 100644
+--- a/parcer.h	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ /dev/null	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
+@@ -1,103 +0,0 @@
+-//
+-// Created by gabriel on 4/28/22.
+-//
+-
+-#ifndef RT_PARCER_H
+-#define RT_PARCER_H
+-
+-#include <string>
+-#include "tinyxml2.h"
+-
+-struct RunningOptions{
+-    std::string cameraType;
+-    std::string filmType;
+-    std::string filmX_res;
+-    std::string filmY_res;
+-    std::string filmFilename;
+-    std::string filmImgtype;
+-    std::string backgroundType;
+-    std::string backgroundMapping;
+-    std::string backgroundColor;
+-    std::string backgroundBl;
+-    std::string backgroundBr;
+-    std::string backgroundTl;
+-    std::string backgroundTr;
+-} RunningOptions;
+-
+-class Parser{
+-public:
+-    static struct RunningOptions parse(int argc, char* argv[]){
+-        if(argc < 2 or argc > 8){
+-            throw std::exception();
+-        }else{
+-            struct RunningOptions ro;
+-            switch(argc){
+-                case 2:
+-                    if(strcmp(argv[1],"--help") == 0 or strcmp(argv[1],"--quick") == 0 or strcmp(argv[1],"--cropWindow") == 0 or strcmp(argv[1], "--outfile") == 0){
+-                        throw std::exception();
+-                    }else{
+-                        tinyxml2::XMLDocument doc;
+-                        doc.LoadFile(argv[1]);
+-                        auto RT3 = doc.RootElement();
+-
+-                        ro.cameraType = RT3->FirstChildElement("camera")->Attribute("type");
+-
+-                        ro.filmType = RT3->FirstChildElement("film")->Attribute("type");
+-                        ro.filmX_res = RT3->FirstChildElement("film")->Attribute("x_res");
+-                        ro.filmY_res = RT3->FirstChildElement("film")->Attribute("y_res");
+-                        ro.filmFilename = RT3->FirstChildElement("film")->Attribute("filename");
+-                        ro.filmImgtype = RT3->FirstChildElement("film")->Attribute("img_type");
+-
+-                        auto background = RT3->FirstChildElement("background");
+-                        ro.backgroundType = background->Attribute("type");
+-                        ro.backgroundMapping = background->Attribute("mapping");
+-                        if(background->Attribute("color")){
+-                            ro.backgroundColor = background->Attribute("color");
+-                            ro.backgroundBl = background->Attribute("color");
+-                            ro.backgroundBr = background->Attribute("color");
+-                            ro.backgroundTl = background->Attribute("color");
+-                            ro.backgroundTr = background->Attribute("color");
+-                        }else {
+-                            ro.backgroundBl = background->Attribute("bl");
+-                            ro.backgroundBr = background->Attribute("br");
+-                            ro.backgroundTl = background->Attribute("tl");
+-                            ro.backgroundTr = background->Attribute("tr");
+-                        }
+-                        return ro;
+-                    }
+-                case 3:
+-                    break;
+-                case 4:
+-                    break;
+-                case 5:
+-                    break;
+-                case 6:
+-                    break;
+-                case 7:
+-                    break;
+-                case 8:
+-                    break;
+-                default:
+-                    break;
+-            }
+-        }
+-    }
+-
+-    static void toString(const struct RunningOptions& ro){
+-        std::cout << "cameraType;" << ro.cameraType << "\n" <<
+-                     "filmType;\n" << ro.filmType << "\n" <<
+-                     "filmX_res;\n"<< ro.filmX_res << "\n" <<
+-                     "filmY_res;\n"<< ro.filmY_res << "\n" <<
+-                     "filmFilename;\n"<< ro.filmFilename << "\n" <<
+-                     "filmImgtype;\n"<< ro.filmImgtype << "\n" <<
+-                     "backgroundType;\n"<< ro.backgroundType << "\n" <<
+-                     "backgroundMapping;\n"<< ro.backgroundMapping << "\n" <<
+-                     "backgroundColor;\n"<< ro.backgroundColor << "\n" <<
+-                     "backgroundBl;\n"<< ro.backgroundBl << "\n" <<
+-                     "backgroundBr;\n"<< ro.backgroundBr << "\n" <<
+-                     "backgroundTl;\n"<< ro.backgroundTl << "\n" <<
+-                     "backgroundTr;"<< ro.backgroundTr << "\n" << std::endl;
+-    }
+-};
+-
+-#endif //RT_PARCER_H
+Index: cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-ea4dc45fa2d06db6d3a2.json
+===================================================================
+diff --git a/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-ea4dc45fa2d06db6d3a2.json b/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-ea4dc45fa2d06db6d3a2.json
+deleted file mode 100644
+--- a/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-ea4dc45fa2d06db6d3a2.json	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ /dev/null	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
+@@ -1,136 +0,0 @@
+-{
+-	"inputs" : 
+-	[
+-		{
+-			"path" : "CMakeLists.txt"
+-		},
+-		{
+-			"isGenerated" : true,
+-			"path" : "cmake-build-debug/CMakeFiles/3.22.3/CMakeSystem.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake"
+-		},
+-		{
+-			"isGenerated" : true,
+-			"path" : "cmake-build-debug/CMakeFiles/3.22.3/CMakeCCompiler.cmake"
+-		},
+-		{
+-			"isGenerated" : true,
+-			"path" : "cmake-build-debug/CMakeFiles/3.22.3/CMakeCXXCompiler.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake"
+-		},
+-		{
+-			"isCMake" : true,
+-			"isExternal" : true,
+-			"path" : "/snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake"
+-		}
+-	],
+-	"kind" : "cmakeFiles",
+-	"paths" : 
+-	{
+-		"build" : "/home/gabriel/CLionProjects/RT/cmake-build-debug",
+-		"source" : "/home/gabriel/CLionProjects/RT"
+-	},
+-	"version" : 
+-	{
+-		"major" : 1,
+-		"minor" : 0
+-	}
+-}
+Index: cmake-build-debug/.ninja_log
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># ninja log v5\n42\t1154\t1651170838616239903\tCMakeFiles/RT.dir/tinyxml2.cpp.o\t45034995dbf8721e\n0\t412\t1651172400199141989\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n412\t471\t1651172400259142179\tRT\teab0536ee4c4f029\n2\t79\t1651175143528628540\tbuild.ninja\t672bfd0ec5cc0558\n0\t514\t1651175172108549594\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n515\t826\t1651175172420586108\tRT\teab0536ee4c4f029\n0\t303\t1651175272559323494\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n303\t375\t1651175272627330162\tRT\teab0536ee4c4f029\n0\t332\t1651175871564422217\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n332\t395\t1651175871624424461\tRT\teab0536ee4c4f029\n0\t349\t1651176061990688655\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n349\t414\t1651176062050690390\tRT\teab0536ee4c4f029\n0\t321\t1651176335925453785\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n321\t383\t1651176335989455139\tRT\teab0536ee4c4f029\n0\t342\t1651176555413644890\tCMakeFiles/RT.dir/main.cpp.o\t1fdbb3c6ad9fb991\n342\t414\t1651176555485646137\tRT\teab0536ee4c4f029\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/.ninja_log b/cmake-build-debug/.ninja_log
+--- a/cmake-build-debug/.ninja_log	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/.ninja_log	(date 1652235224558)
+@@ -1,17 +1,13 @@
+ # ninja log v5
++2	79	1652234325582540336	build.ninja	672bfd0ec5cc0558
+ 42	1154	1651170838616239903	CMakeFiles/RT.dir/tinyxml2.cpp.o	45034995dbf8721e
+-0	412	1651172400199141989	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+-412	471	1651172400259142179	RT	eab0536ee4c4f029
+-2	79	1651175143528628540	build.ninja	672bfd0ec5cc0558
+-0	514	1651175172108549594	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+-515	826	1651175172420586108	RT	eab0536ee4c4f029
+-0	303	1651175272559323494	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+-303	375	1651175272627330162	RT	eab0536ee4c4f029
+-0	332	1651175871564422217	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+-332	395	1651175871624424461	RT	eab0536ee4c4f029
+-0	349	1651176061990688655	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+-349	414	1651176062050690390	RT	eab0536ee4c4f029
+-0	321	1651176335925453785	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+-321	383	1651176335989455139	RT	eab0536ee4c4f029
+ 0	342	1651176555413644890	CMakeFiles/RT.dir/main.cpp.o	1fdbb3c6ad9fb991
+ 342	414	1651176555485646137	RT	eab0536ee4c4f029
++0	14	1652234325582540336	build.ninja	d8a3604963c47372
++1	385	1652234325970547261	CMakeFiles/RT.dir/main.cpp.o	a5a123237efd51a4
++1	417	1652234326002547831	CMakeFiles/RT.dir/tinyxml2.cpp.o	471ddcd64f0e8ccc
++417	471	1652234326054548760	RT	eab0536ee4c4f029
++1	645	1652235020974884327	CMakeFiles/RT.dir/main.cpp.o	a5a123237efd51a4
++645	817	1652235021146887371	RT	eab0536ee4c4f029
++0	348	1652235224502482774	CMakeFiles/RT.dir/main.cpp.o	a5a123237efd51a4
++348	404	1652235224558483763	RT	eab0536ee4c4f029
+Index: cmake-build-debug/CMakeFiles/clion-log.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/snap/clion/189/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/189/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/RT -B /home/gabriel/CLionProjects/RT/cmake-build-debug\n-- Configuring done\n-- Generating done\n-- Build files have been written to: /home/gabriel/CLionProjects/RT/cmake-build-debug\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/CMakeFiles/clion-log.txt b/cmake-build-debug/CMakeFiles/clion-log.txt
+--- a/cmake-build-debug/CMakeFiles/clion-log.txt	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/CMakeFiles/clion-log.txt	(date 1652233932263)
+@@ -1,4 +1,13 @@
+-/snap/clion/189/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/189/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/RT -B /home/gabriel/CLionProjects/RT/cmake-build-debug
++/snap/clion/189/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/189/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/Ray-Tracing -B /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+ -- Configuring done
+--- Generating done
+--- Build files have been written to: /home/gabriel/CLionProjects/RT/cmake-build-debug
++CMake Error at CMakeLists.txt:6 (add_executable):
++  Cannot find source file:
++
++    parser.h
++
++
++CMake Error at CMakeLists.txt:6 (add_executable):
++  No SOURCES given to target: RT
++
++
++CMake Generate step failed.  Build files cannot be regenerated correctly.
+Index: cmake-build-debug/CMakeCache.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># This is the CMakeCache file.\n# For build in directory: /home/gabriel/CLionProjects/RT/cmake-build-debug\n# It was generated by CMake: /snap/clion/189/bin/cmake/linux/bin/cmake\n# You can edit this file to change values found and used by cmake.\n# If you do not want to change any of the values, simply exit the editor.\n# If you do want to change a value, simply edit, save, and exit the editor.\n# The syntax for the file is as follows:\n# KEY:TYPE=VALUE\n# KEY is the name of a variable in the cache.\n# TYPE is a hint to GUIs for the type of VALUE, DO NOT EDIT TYPE!.\n# VALUE is the current value for the KEY.\n\n########################\n# EXTERNAL cache entries\n########################\n\n//Path to a program.\nCMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line\n\n//Path to a program.\nCMAKE_AR:FILEPATH=/usr/bin/ar\n\n//Choose the type of build, options are: None Debug Release RelWithDebInfo\n// MinSizeRel ...\nCMAKE_BUILD_TYPE:STRING=Debug\n\n//CXX compiler\nCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/c++\n\n//A wrapper around 'ar' adding the appropriate '--plugin' option\n// for the GCC compiler\nCMAKE_CXX_COMPILER_AR:FILEPATH=/usr/bin/gcc-ar-9\n\n//A wrapper around 'ranlib' adding the appropriate '--plugin' option\n// for the GCC compiler\nCMAKE_CXX_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib-9\n\n//Flags used by the CXX compiler during all build types.\nCMAKE_CXX_FLAGS:STRING=\n\n//Flags used by the CXX compiler during DEBUG builds.\nCMAKE_CXX_FLAGS_DEBUG:STRING=-g\n\n//Flags used by the CXX compiler during MINSIZEREL builds.\nCMAKE_CXX_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG\n\n//Flags used by the CXX compiler during RELEASE builds.\nCMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG\n\n//Flags used by the CXX compiler during RELWITHDEBINFO builds.\nCMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG\n\n//C compiler\nCMAKE_C_COMPILER:FILEPATH=/usr/bin/cc\n\n//A wrapper around 'ar' adding the appropriate '--plugin' option\n// for the GCC compiler\nCMAKE_C_COMPILER_AR:FILEPATH=/usr/bin/gcc-ar-9\n\n//A wrapper around 'ranlib' adding the appropriate '--plugin' option\n// for the GCC compiler\nCMAKE_C_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib-9\n\n//Flags used by the C compiler during all build types.\nCMAKE_C_FLAGS:STRING=\n\n//Flags used by the C compiler during DEBUG builds.\nCMAKE_C_FLAGS_DEBUG:STRING=-g\n\n//Flags used by the C compiler during MINSIZEREL builds.\nCMAKE_C_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG\n\n//Flags used by the C compiler during RELEASE builds.\nCMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG\n\n//Flags used by the C compiler during RELWITHDEBINFO builds.\nCMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG\n\n//Path to a program.\nCMAKE_DLLTOOL:FILEPATH=CMAKE_DLLTOOL-NOTFOUND\n\n//Flags used by the linker during all build types.\nCMAKE_EXE_LINKER_FLAGS:STRING=\n\n//Flags used by the linker during DEBUG builds.\nCMAKE_EXE_LINKER_FLAGS_DEBUG:STRING=\n\n//Flags used by the linker during MINSIZEREL builds.\nCMAKE_EXE_LINKER_FLAGS_MINSIZEREL:STRING=\n\n//Flags used by the linker during RELEASE builds.\nCMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=\n\n//Flags used by the linker during RELWITHDEBINFO builds.\nCMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=\n\n//Enable/Disable output of compile commands during generation.\nCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=\n\n//Install path prefix, prepended onto install directories.\nCMAKE_INSTALL_PREFIX:PATH=/usr/local\n\n//Path to a program.\nCMAKE_LINKER:FILEPATH=/usr/bin/ld\n\n//No help, variable specified on the command line.\nCMAKE_MAKE_PROGRAM:UNINITIALIZED=/snap/clion/189/bin/ninja/linux/ninja\n\n//Flags used by the linker during the creation of modules during\n// all build types.\nCMAKE_MODULE_LINKER_FLAGS:STRING=\n\n//Flags used by the linker during the creation of modules during\n// DEBUG builds.\nCMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING=\n\n//Flags used by the linker during the creation of modules during\n// MINSIZEREL builds.\nCMAKE_MODULE_LINKER_FLAGS_MINSIZEREL:STRING=\n\n//Flags used by the linker during the creation of modules during\n// RELEASE builds.\nCMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=\n\n//Flags used by the linker during the creation of modules during\n// RELWITHDEBINFO builds.\nCMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=\n\n//Path to a program.\nCMAKE_NM:FILEPATH=/usr/bin/nm\n\n//Path to a program.\nCMAKE_OBJCOPY:FILEPATH=/usr/bin/objcopy\n\n//Path to a program.\nCMAKE_OBJDUMP:FILEPATH=/usr/bin/objdump\n\n//Value Computed by CMake\nCMAKE_PROJECT_DESCRIPTION:STATIC=\n\n//Value Computed by CMake\nCMAKE_PROJECT_HOMEPAGE_URL:STATIC=\n\n//Value Computed by CMake\nCMAKE_PROJECT_NAME:STATIC=RT\n\n//Path to a program.\nCMAKE_RANLIB:FILEPATH=/usr/bin/ranlib\n\n//Path to a program.\nCMAKE_READELF:FILEPATH=/usr/bin/readelf\n\n//Flags used by the linker during the creation of shared libraries\n// during all build types.\nCMAKE_SHARED_LINKER_FLAGS:STRING=\n\n//Flags used by the linker during the creation of shared libraries\n// during DEBUG builds.\nCMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING=\n\n//Flags used by the linker during the creation of shared libraries\n// during MINSIZEREL builds.\nCMAKE_SHARED_LINKER_FLAGS_MINSIZEREL:STRING=\n\n//Flags used by the linker during the creation of shared libraries\n// during RELEASE builds.\nCMAKE_SHARED_LINKER_FLAGS_RELEASE:STRING=\n\n//Flags used by the linker during the creation of shared libraries\n// during RELWITHDEBINFO builds.\nCMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING=\n\n//If set, runtime paths are not added when installing shared libraries,\n// but are added when building.\nCMAKE_SKIP_INSTALL_RPATH:BOOL=NO\n\n//If set, runtime paths are not added when using shared libraries.\nCMAKE_SKIP_RPATH:BOOL=NO\n\n//Flags used by the linker during the creation of static libraries\n// during all build types.\nCMAKE_STATIC_LINKER_FLAGS:STRING=\n\n//Flags used by the linker during the creation of static libraries\n// during DEBUG builds.\nCMAKE_STATIC_LINKER_FLAGS_DEBUG:STRING=\n\n//Flags used by the linker during the creation of static libraries\n// during MINSIZEREL builds.\nCMAKE_STATIC_LINKER_FLAGS_MINSIZEREL:STRING=\n\n//Flags used by the linker during the creation of static libraries\n// during RELEASE builds.\nCMAKE_STATIC_LINKER_FLAGS_RELEASE:STRING=\n\n//Flags used by the linker during the creation of static libraries\n// during RELWITHDEBINFO builds.\nCMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=\n\n//Path to a program.\nCMAKE_STRIP:FILEPATH=/usr/bin/strip\n\n//If this value is on, makefiles will be generated without the\n// .SILENT directive, and all commands will be echoed to the console\n// during the make.  This is useful for debugging only. With Visual\n// Studio IDE projects all commands are done without /nologo.\nCMAKE_VERBOSE_MAKEFILE:BOOL=FALSE\n\n//Value Computed by CMake\nRT_BINARY_DIR:STATIC=/home/gabriel/CLionProjects/RT/cmake-build-debug\n\n//Value Computed by CMake\nRT_IS_TOP_LEVEL:STATIC=ON\n\n//Value Computed by CMake\nRT_SOURCE_DIR:STATIC=/home/gabriel/CLionProjects/RT\n\n\n########################\n# INTERNAL cache entries\n########################\n\n//ADVANCED property for variable: CMAKE_ADDR2LINE\nCMAKE_ADDR2LINE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_AR\nCMAKE_AR-ADVANCED:INTERNAL=1\n//This is the directory where this CMakeCache.txt was created\nCMAKE_CACHEFILE_DIR:INTERNAL=/home/gabriel/CLionProjects/RT/cmake-build-debug\n//Major version of cmake used to create the current loaded cache\nCMAKE_CACHE_MAJOR_VERSION:INTERNAL=3\n//Minor version of cmake used to create the current loaded cache\nCMAKE_CACHE_MINOR_VERSION:INTERNAL=22\n//Patch version of cmake used to create the current loaded cache\nCMAKE_CACHE_PATCH_VERSION:INTERNAL=3\n//Path to CMake executable.\nCMAKE_COMMAND:INTERNAL=/snap/clion/189/bin/cmake/linux/bin/cmake\n//Path to cpack program executable.\nCMAKE_CPACK_COMMAND:INTERNAL=/snap/clion/189/bin/cmake/linux/bin/cpack\n//Path to ctest program executable.\nCMAKE_CTEST_COMMAND:INTERNAL=/snap/clion/189/bin/cmake/linux/bin/ctest\n//ADVANCED property for variable: CMAKE_CXX_COMPILER\nCMAKE_CXX_COMPILER-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_COMPILER_AR\nCMAKE_CXX_COMPILER_AR-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_COMPILER_RANLIB\nCMAKE_CXX_COMPILER_RANLIB-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_FLAGS\nCMAKE_CXX_FLAGS-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_FLAGS_DEBUG\nCMAKE_CXX_FLAGS_DEBUG-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_FLAGS_MINSIZEREL\nCMAKE_CXX_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_FLAGS_RELEASE\nCMAKE_CXX_FLAGS_RELEASE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_CXX_FLAGS_RELWITHDEBINFO\nCMAKE_CXX_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_COMPILER\nCMAKE_C_COMPILER-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_COMPILER_AR\nCMAKE_C_COMPILER_AR-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_COMPILER_RANLIB\nCMAKE_C_COMPILER_RANLIB-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_FLAGS\nCMAKE_C_FLAGS-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_FLAGS_DEBUG\nCMAKE_C_FLAGS_DEBUG-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_FLAGS_MINSIZEREL\nCMAKE_C_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_FLAGS_RELEASE\nCMAKE_C_FLAGS_RELEASE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_C_FLAGS_RELWITHDEBINFO\nCMAKE_C_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_DLLTOOL\nCMAKE_DLLTOOL-ADVANCED:INTERNAL=1\n//Path to cache edit program executable.\nCMAKE_EDIT_COMMAND:INTERNAL=/snap/clion/189/bin/cmake/linux/bin/ccmake\n//Executable file format\nCMAKE_EXECUTABLE_FORMAT:INTERNAL=ELF\n//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS\nCMAKE_EXE_LINKER_FLAGS-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_DEBUG\nCMAKE_EXE_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_MINSIZEREL\nCMAKE_EXE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELEASE\nCMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO\nCMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_EXPORT_COMPILE_COMMANDS\nCMAKE_EXPORT_COMPILE_COMMANDS-ADVANCED:INTERNAL=1\n//Name of external makefile project generator.\nCMAKE_EXTRA_GENERATOR:INTERNAL=\n//Name of generator.\nCMAKE_GENERATOR:INTERNAL=Ninja\n//Generator instance identifier.\nCMAKE_GENERATOR_INSTANCE:INTERNAL=\n//Name of generator platform.\nCMAKE_GENERATOR_PLATFORM:INTERNAL=\n//Name of generator toolset.\nCMAKE_GENERATOR_TOOLSET:INTERNAL=\n//Source directory with the top level CMakeLists.txt file for this\n// project\nCMAKE_HOME_DIRECTORY:INTERNAL=/home/gabriel/CLionProjects/RT\n//Install .so files without execute permission.\nCMAKE_INSTALL_SO_NO_EXE:INTERNAL=1\n//ADVANCED property for variable: CMAKE_LINKER\nCMAKE_LINKER-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS\nCMAKE_MODULE_LINKER_FLAGS-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_DEBUG\nCMAKE_MODULE_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL\nCMAKE_MODULE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELEASE\nCMAKE_MODULE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO\nCMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_NM\nCMAKE_NM-ADVANCED:INTERNAL=1\n//number of local generators\nCMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1\n//ADVANCED property for variable: CMAKE_OBJCOPY\nCMAKE_OBJCOPY-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_OBJDUMP\nCMAKE_OBJDUMP-ADVANCED:INTERNAL=1\n//Platform information initialized\nCMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_RANLIB\nCMAKE_RANLIB-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_READELF\nCMAKE_READELF-ADVANCED:INTERNAL=1\n//Path to CMake installation.\nCMAKE_ROOT:INTERNAL=/snap/clion/189/bin/cmake/linux/share/cmake-3.22\n//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS\nCMAKE_SHARED_LINKER_FLAGS-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_DEBUG\nCMAKE_SHARED_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL\nCMAKE_SHARED_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_RELEASE\nCMAKE_SHARED_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO\nCMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_SKIP_INSTALL_RPATH\nCMAKE_SKIP_INSTALL_RPATH-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_SKIP_RPATH\nCMAKE_SKIP_RPATH-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS\nCMAKE_STATIC_LINKER_FLAGS-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_DEBUG\nCMAKE_STATIC_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL\nCMAKE_STATIC_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELEASE\nCMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO\nCMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1\n//ADVANCED property for variable: CMAKE_STRIP\nCMAKE_STRIP-ADVANCED:INTERNAL=1\n//uname command\nCMAKE_UNAME:INTERNAL=/usr/bin/uname\n//ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE\nCMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/CMakeCache.txt b/cmake-build-debug/CMakeCache.txt
+--- a/cmake-build-debug/CMakeCache.txt	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/CMakeCache.txt	(date 1652233931375)
+@@ -1,5 +1,5 @@
+ # This is the CMakeCache file.
+-# For build in directory: /home/gabriel/CLionProjects/RT/cmake-build-debug
++# For build in directory: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+ # It was generated by CMake: /snap/clion/189/bin/cmake/linux/bin/cmake
+ # You can edit this file to change values found and used by cmake.
+ # If you do not want to change any of the values, simply exit the editor.
+@@ -207,13 +207,13 @@
+ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
+ 
+ //Value Computed by CMake
+-RT_BINARY_DIR:STATIC=/home/gabriel/CLionProjects/RT/cmake-build-debug
++RT_BINARY_DIR:STATIC=/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+ 
+ //Value Computed by CMake
+ RT_IS_TOP_LEVEL:STATIC=ON
+ 
+ //Value Computed by CMake
+-RT_SOURCE_DIR:STATIC=/home/gabriel/CLionProjects/RT
++RT_SOURCE_DIR:STATIC=/home/gabriel/CLionProjects/Ray-Tracing
+ 
+ 
+ ########################
+@@ -225,7 +225,7 @@
+ //ADVANCED property for variable: CMAKE_AR
+ CMAKE_AR-ADVANCED:INTERNAL=1
+ //This is the directory where this CMakeCache.txt was created
+-CMAKE_CACHEFILE_DIR:INTERNAL=/home/gabriel/CLionProjects/RT/cmake-build-debug
++CMAKE_CACHEFILE_DIR:INTERNAL=/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+ //Major version of cmake used to create the current loaded cache
+ CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
+ //Minor version of cmake used to create the current loaded cache
+@@ -300,7 +300,7 @@
+ CMAKE_GENERATOR_TOOLSET:INTERNAL=
+ //Source directory with the top level CMakeLists.txt file for this
+ // project
+-CMAKE_HOME_DIRECTORY:INTERNAL=/home/gabriel/CLionProjects/RT
++CMAKE_HOME_DIRECTORY:INTERNAL=/home/gabriel/CLionProjects/Ray-Tracing
+ //Install .so files without execute permission.
+ CMAKE_INSTALL_SO_NO_EXE:INTERNAL=1
+ //ADVANCED property for variable: CMAKE_LINKER
+Index: cmake-build-debug/cmake_install.cmake
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Install script for directory: /home/gabriel/CLionProjects/RT\n\n# Set the install prefix\nif(NOT DEFINED CMAKE_INSTALL_PREFIX)\n  set(CMAKE_INSTALL_PREFIX \"/usr/local\")\nendif()\nstring(REGEX REPLACE \"/$\" \"\" CMAKE_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\")\n\n# Set the install configuration name.\nif(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)\n  if(BUILD_TYPE)\n    string(REGEX REPLACE \"^[^A-Za-z0-9_]+\" \"\"\n           CMAKE_INSTALL_CONFIG_NAME \"${BUILD_TYPE}\")\n  else()\n    set(CMAKE_INSTALL_CONFIG_NAME \"Debug\")\n  endif()\n  message(STATUS \"Install configuration: \\\"${CMAKE_INSTALL_CONFIG_NAME}\\\"\")\nendif()\n\n# Set the component getting installed.\nif(NOT CMAKE_INSTALL_COMPONENT)\n  if(COMPONENT)\n    message(STATUS \"Install component: \\\"${COMPONENT}\\\"\")\n    set(CMAKE_INSTALL_COMPONENT \"${COMPONENT}\")\n  else()\n    set(CMAKE_INSTALL_COMPONENT)\n  endif()\nendif()\n\n# Install shared libraries without execute permission?\nif(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)\n  set(CMAKE_INSTALL_SO_NO_EXE \"1\")\nendif()\n\n# Is this installation the result of a crosscompile?\nif(NOT DEFINED CMAKE_CROSSCOMPILING)\n  set(CMAKE_CROSSCOMPILING \"FALSE\")\nendif()\n\n# Set default install directory permissions.\nif(NOT DEFINED CMAKE_OBJDUMP)\n  set(CMAKE_OBJDUMP \"/usr/bin/objdump\")\nendif()\n\nif(CMAKE_INSTALL_COMPONENT)\n  set(CMAKE_INSTALL_MANIFEST \"install_manifest_${CMAKE_INSTALL_COMPONENT}.txt\")\nelse()\n  set(CMAKE_INSTALL_MANIFEST \"install_manifest.txt\")\nendif()\n\nstring(REPLACE \";\" \"\\n\" CMAKE_INSTALL_MANIFEST_CONTENT\n       \"${CMAKE_INSTALL_MANIFEST_FILES}\")\nfile(WRITE \"/home/gabriel/CLionProjects/RT/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}\"\n     \"${CMAKE_INSTALL_MANIFEST_CONTENT}\")\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/cmake_install.cmake b/cmake-build-debug/cmake_install.cmake
+--- a/cmake-build-debug/cmake_install.cmake	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/cmake_install.cmake	(date 1652233931611)
+@@ -1,4 +1,4 @@
+-# Install script for directory: /home/gabriel/CLionProjects/RT
++# Install script for directory: /home/gabriel/CLionProjects/Ray-Tracing
+ 
+ # Set the install prefix
+ if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+@@ -50,5 +50,5 @@
+ 
+ string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
+        "${CMAKE_INSTALL_MANIFEST_FILES}")
+-file(WRITE "/home/gabriel/CLionProjects/RT/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
++file(WRITE "/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
+Index: cmake-build-debug/CMakeFiles/TargetDirectories.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/RT.dir\n/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/edit_cache.dir\n/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/rebuild_cache.dir\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/CMakeFiles/TargetDirectories.txt b/cmake-build-debug/CMakeFiles/TargetDirectories.txt
+--- a/cmake-build-debug/CMakeFiles/TargetDirectories.txt	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/CMakeFiles/TargetDirectories.txt	(date 1652234325578)
+@@ -1,3 +1,3 @@
+-/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/RT.dir
+-/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/edit_cache.dir
+-/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/rebuild_cache.dir
++/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/RT.dir
++/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/edit_cache.dir
++/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+Index: cmake-build-debug/Testing/Temporary/LastTest.log
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>Start testing: Apr 28 17:09 -03\n----------------------------------------------------------\nEnd testing: Apr 28 17:09 -03\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/Testing/Temporary/LastTest.log b/cmake-build-debug/Testing/Temporary/LastTest.log
+--- a/cmake-build-debug/Testing/Temporary/LastTest.log	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/Testing/Temporary/LastTest.log	(date 1652286900322)
+@@ -1,3 +1,3 @@
+-Start testing: Apr 28 17:09 -03
++Start testing: May 11 13:35 -03
+ ----------------------------------------------------------
+-End testing: Apr 28 17:09 -03
++End testing: May 11 13:35 -03
+Index: CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>cmake_minimum_required(VERSION 3.22)\nproject(RT)\n\nset(CMAKE_CXX_STANDARD 14)\n\nadd_executable(RT main.cpp vec3.h color.h ray.h \"parcer.h\" tinyxml2.cpp tinyxml2.h)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/CMakeLists.txt	(date 1652233931435)
+@@ -3,4 +3,4 @@
+ 
+ set(CMAKE_CXX_STANDARD 14)
+ 
+-add_executable(RT main.cpp vec3.h color.h ray.h "parcer.h" tinyxml2.cpp tinyxml2.h)
++add_executable(RT main.cpp vec3.h color.h ray.h "parser.h" tinyxml2.cpp tinyxml2.h)
+Index: cmake-build-debug/CMakeFiles/rules.ninja
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># CMAKE generated file: DO NOT EDIT!\n# Generated by \"Ninja\" Generator, CMake Version 3.22\n\n# This file contains all the rules used to get the outputs files\n# built from the input files.\n# It is included in the main 'build.ninja'.\n\n# =============================================================================\n# Project: RT\n# Configurations: Debug\n# =============================================================================\n# =============================================================================\n\n#############################################\n# Rule for compiling CXX files.\n\nrule CXX_COMPILER__RT_Debug\n  depfile = $DEP_FILE\n  deps = gcc\n  command = /usr/bin/c++ $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in\n  description = Building CXX object $out\n\n\n#############################################\n# Rule for linking CXX executable.\n\nrule CXX_EXECUTABLE_LINKER__RT_Debug\n  command = $PRE_LINK && /usr/bin/c++ $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD\n  description = Linking CXX executable $TARGET_FILE\n  restat = $RESTAT\n\n\n#############################################\n# Rule for running custom commands.\n\nrule CUSTOM_COMMAND\n  command = $COMMAND\n  description = $DESC\n\n\n#############################################\n# Rule for re-running cmake.\n\nrule RERUN_CMAKE\n  command = /snap/clion/189/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/RT -B/home/gabriel/CLionProjects/RT/cmake-build-debug\n  description = Re-running CMake...\n  generator = 1\n\n\n#############################################\n# Rule for cleaning all built files.\n\nrule CLEAN\n  command = /snap/clion/189/bin/ninja/linux/ninja $FILE_ARG -t clean $TARGETS\n  description = Cleaning all built files...\n\n\n#############################################\n# Rule for printing all primary targets available.\n\nrule HELP\n  command = /snap/clion/189/bin/ninja/linux/ninja -t targets\n  description = All primary targets available:\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/CMakeFiles/rules.ninja b/cmake-build-debug/CMakeFiles/rules.ninja
+--- a/cmake-build-debug/CMakeFiles/rules.ninja	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/CMakeFiles/rules.ninja	(date 1652234325582)
+@@ -42,7 +42,7 @@
+ # Rule for re-running cmake.
+ 
+ rule RERUN_CMAKE
+-  command = /snap/clion/189/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/RT -B/home/gabriel/CLionProjects/RT/cmake-build-debug
++  command = /snap/clion/189/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/Ray-Tracing -B/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+   description = Re-running CMake...
+   generator = 1
+ 
+Index: parser.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/parser.h b/parser.h
+new file mode 100644
+--- /dev/null	(date 1652235025506)
++++ b/parser.h	(date 1652235025506)
+@@ -0,0 +1,161 @@
++//
++// Created by gabriel on 4/28/22.
++//
++
++#ifndef RT_PARSER_H
++#define RT_PARSER_H
++
++#include <string>
++#include <sstream>
++#include "tinyxml2.h"
++
++struct RunningOptions{
++    bool  help = false;
++    std::string cameraType;
++    std::string filmType;
++    int filmX_res = 0;
++    int filmY_res = 0;
++    std::string filmFilename;
++    std::string filmImgtype;
++    std::string backgroundType;
++    std::string backgroundMapping;
++    color backgroundColor = color(0,0,0);
++    color backgroundBl = color(0,0,0);
++    color backgroundBr = color(0,0,0);
++    color backgroundTl = color(0,0,0);
++    color backgroundTr = color(0,0,0);
++} RunningOptions;
++
++class Parser{
++public:
++    static struct RunningOptions parse(int argc, char* argv[]){
++        if(argc < 2 or argc > 8){
++            throw std::invalid_argument("No arguments provided");
++        }else{
++            struct RunningOptions ro;
++            switch(argc){
++                case 2:
++                    if(strcmp(argv[1],"--help") == 0){
++                        std::cout << "Usage: RT [<options>] \"input_scene_file\"\nRendering simulation options:\n\t--help                     Print this help text.\n\t--cropwindow x0,x1,y0,y1   Specify an image crop window.\n\t--quick                    Reduces quality parameters to render image quickly.\n\t--outfile <filename>       Write the rendered image to <filename>." << std::endl;
++                        ro.help = true;
++                        return ro;
++                    }else if(strcmp(argv[1],"--quick") == 0 or strcmp(argv[1],"--cropWindow") == 0 or strcmp(argv[1], "--outfile") == 0){
++                        throw std::invalid_argument("Scene file path not informed");
++                    }else {
++                        tinyxml2::XMLDocument doc;
++                        if (doc.LoadFile(argv[1]) == 0) {
++                            auto RT3 = doc.RootElement();
++
++                            ro.cameraType = RT3->FirstChildElement("camera")->Attribute("type");
++
++                            ro.filmType = RT3->FirstChildElement("film")->Attribute("type");
++                            try {
++                                ro.filmX_res = std::stoi(RT3->FirstChildElement("film")->Attribute("x_res"));
++                            } catch(std::exception& e) {
++                                std::cout<<"Unable to read x_res field in field tag from Scene File, setting to default value" << std::endl;
++                                ro.filmX_res = 800;
++                            }
++                            try {
++                                ro.filmY_res = std::stoi(RT3->FirstChildElement("film")->Attribute("y_res"));
++                            } catch(std::exception& e) {
++                                std::cout<<"Unable to read y_res field in field tag from Scene File, setting to default value" << std::endl;
++                                ro.filmY_res = 600;
++                            }
++                            ro.filmFilename = RT3->FirstChildElement("film")->Attribute("filename");
++                            ro.filmImgtype = RT3->FirstChildElement("film")->Attribute("img_type");
++
++                            auto background = RT3->FirstChildElement("background");
++                            ro.backgroundType = background->Attribute("type");
++                            ro.backgroundMapping = background->Attribute("mapping");
++                            if (background->Attribute("color")) {
++                                std::string aux = background->Attribute("color");
++                                color c(0,0,0);
++                                std::stringstream aux2;
++                                for(int i = 0; i < 2; i++){
++                                    aux2 << aux;
++                                    try {
++                                        c[i] = std::stoi(aux2.str());
++                                    }catch(std::exception& e){
++                                        std::cout << "Failed to convert color vector. Setting default value" << std::endl;
++                                    }
++                                }
++                                ro.backgroundColor = c;
++                                ro.backgroundBl = c;
++                                ro.backgroundBr = c;
++                                ro.backgroundTl = c;
++                                ro.backgroundTr = c;
++                            } else {
++                                std::string auxbl = background->Attribute("bl"), auxbr = background->Attribute("br"), auxtl = background->Attribute("tl"), auxtr = background->Attribute("tr");
++                                color bl(0,0,0),tl(0,0,0),br(0,0,0),tr(0,0,0);
++                                std::stringstream sAuxBl, sAuxBr,sAuxTl,sAuxTr;
++                                for(int i = 0; i < 2; i++){
++                                    sAuxBl << auxbl;
++                                    sAuxBr << auxbr;
++                                    sAuxTl << auxtl;
++                                    sAuxTr << auxtr;
++                                    try {
++                                        bl[i] = std::stoi(sAuxBl.str());
++                                        br[i] = std::stoi(sAuxBr.str());
++                                        tl[i] = std::stoi(sAuxTl.str());
++                                        tr[i] = std::stoi(sAuxTr.str());
++                                    }catch(std::exception& e){
++                                        std::cout << "Failed to convert color vectors. Setting default value" << std::endl;
++                                    }
++                                    sAuxBl.clear();
++                                    sAuxBl.seekg(0);
++
++                                    sAuxBr.clear();
++                                    sAuxBr.seekg(0);
++
++                                    sAuxTl.clear();
++                                    sAuxTl.seekg(0);
++
++                                    sAuxTr.clear();
++                                    sAuxTl.seekg(0);
++                                }
++                                ro.backgroundBl = bl;
++                                ro.backgroundBr = br;
++                                ro.backgroundTl = tl;
++                                ro.backgroundTr = tr;
++                            }
++                            return ro;
++                        }else{
++                            throw std::invalid_argument("Unable to open Scene File");
++                        }
++                    }
++                case 3:
++                    break;
++                case 4:
++                    break;
++                case 5:
++                    break;
++                case 6:
++                    break;
++                case 7:
++                    break;
++                case 8:
++                    break;
++                default:
++                    break;
++            }
++        }
++    }
++
++    static void toString(const struct RunningOptions& ro){
++        std::cout << "cameraType;" << ro.cameraType << "\n" <<
++                  "filmType;\n" << ro.filmType << "\n" <<
++                  "filmX_res;\n"<< ro.filmX_res << "\n" <<
++                  "filmY_res;\n"<< ro.filmY_res << "\n" <<
++                  "filmFilename;\n"<< ro.filmFilename << "\n" <<
++                  "filmImgtype;\n"<< ro.filmImgtype << "\n" <<
++                  "backgroundType;\n"<< ro.backgroundType << "\n" <<
++                  "backgroundMapping;\n"<< ro.backgroundMapping << "\n" <<
++                  "backgroundColor;\n"<< ro.backgroundColor << "\n" <<
++                  "backgroundBl;\n"<< ro.backgroundBl << "\n" <<
++                  "backgroundBr;\n"<< ro.backgroundBr << "\n" <<
++                  "backgroundTl;\n"<< ro.backgroundTl << "\n" <<
++                  "backgroundTr;"<< ro.backgroundTr << "\n" << std::endl;
++    }
++};
++
++#endif //RT_PARSER_H
+Index: cmake-build-debug/build.ninja
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># CMAKE generated file: DO NOT EDIT!\n# Generated by \"Ninja\" Generator, CMake Version 3.22\n\n# This file contains all the build statements describing the\n# compilation DAG.\n\n# =============================================================================\n# Write statements declared in CMakeLists.txt:\n# \n# Which is the root file.\n# =============================================================================\n\n# =============================================================================\n# Project: RT\n# Configurations: Debug\n# =============================================================================\n\n#############################################\n# Minimal version of Ninja required by this file\n\nninja_required_version = 1.5\n\n\n#############################################\n# Set configuration variable for custom commands.\n\nCONFIGURATION = Debug\n# =============================================================================\n# Include auxiliary files.\n\n\n#############################################\n# Include rules file.\n\ninclude CMakeFiles/rules.ninja\n\n# =============================================================================\n\n#############################################\n# Logical path to working directory; prefix for absolute paths.\n\ncmake_ninja_workdir = /home/gabriel/CLionProjects/RT/cmake-build-debug/\n# =============================================================================\n# Object build statements for EXECUTABLE target RT\n\n\n#############################################\n# Order-only phony target for RT\n\nbuild cmake_object_order_depends_target_RT: phony || CMakeFiles/RT.dir\n\nbuild CMakeFiles/RT.dir/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/RT/main.cpp || cmake_object_order_depends_target_RT\n  DEP_FILE = CMakeFiles/RT.dir/main.cpp.o.d\n  FLAGS = -g\n  OBJECT_DIR = CMakeFiles/RT.dir\n  OBJECT_FILE_DIR = CMakeFiles/RT.dir\n\nbuild CMakeFiles/RT.dir/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/RT/tinyxml2.cpp || cmake_object_order_depends_target_RT\n  DEP_FILE = CMakeFiles/RT.dir/tinyxml2.cpp.o.d\n  FLAGS = -g\n  OBJECT_DIR = CMakeFiles/RT.dir\n  OBJECT_FILE_DIR = CMakeFiles/RT.dir\n\n\n# =============================================================================\n# Link build statements for EXECUTABLE target RT\n\n\n#############################################\n# Link the executable RT\n\nbuild RT: CXX_EXECUTABLE_LINKER__RT_Debug CMakeFiles/RT.dir/main.cpp.o CMakeFiles/RT.dir/tinyxml2.cpp.o\n  FLAGS = -g\n  OBJECT_DIR = CMakeFiles/RT.dir\n  POST_BUILD = :\n  PRE_LINK = :\n  TARGET_FILE = RT\n  TARGET_PDB = RT.dbg\n\n\n#############################################\n# Utility command for edit_cache\n\nbuild CMakeFiles/edit_cache.util: CUSTOM_COMMAND\n  COMMAND = cd /home/gabriel/CLionProjects/RT/cmake-build-debug && /snap/clion/189/bin/cmake/linux/bin/ccmake -S/home/gabriel/CLionProjects/RT -B/home/gabriel/CLionProjects/RT/cmake-build-debug\n  DESC = Running CMake cache editor...\n  pool = console\n  restat = 1\n\nbuild edit_cache: phony CMakeFiles/edit_cache.util\n\n\n#############################################\n# Utility command for rebuild_cache\n\nbuild CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND\n  COMMAND = cd /home/gabriel/CLionProjects/RT/cmake-build-debug && /snap/clion/189/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/RT -B/home/gabriel/CLionProjects/RT/cmake-build-debug\n  DESC = Running CMake to regenerate build system...\n  pool = console\n  restat = 1\n\nbuild rebuild_cache: phony CMakeFiles/rebuild_cache.util\n\n# =============================================================================\n# Target aliases.\n\n# =============================================================================\n# Folder targets.\n\n# =============================================================================\n\n#############################################\n# Folder: /home/gabriel/CLionProjects/RT/cmake-build-debug\n\nbuild all: phony RT\n\n# =============================================================================\n# Built-in targets\n\n\n#############################################\n# Re-run CMake if any of its inputs changed.\n\nbuild build.ninja: RERUN_CMAKE | ../CMakeLists.txt /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCCompiler.cmake CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake\n  pool = console\n\n\n#############################################\n# A missing CMake input file is not an error.\n\nbuild ../CMakeLists.txt /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCCompiler.cmake CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake: phony\n\n\n#############################################\n# Clean all the built files.\n\nbuild clean: CLEAN\n\n\n#############################################\n# Print all primary targets available.\n\nbuild help: HELP\n\n\n#############################################\n# Make the all target the default.\n\ndefault all\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/build.ninja b/cmake-build-debug/build.ninja
+--- a/cmake-build-debug/build.ninja	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/build.ninja	(date 1652234325582)
+@@ -39,7 +39,7 @@
+ #############################################
+ # Logical path to working directory; prefix for absolute paths.
+ 
+-cmake_ninja_workdir = /home/gabriel/CLionProjects/RT/cmake-build-debug/
++cmake_ninja_workdir = /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/
+ # =============================================================================
+ # Object build statements for EXECUTABLE target RT
+ 
+@@ -49,13 +49,13 @@
+ 
+ build cmake_object_order_depends_target_RT: phony || CMakeFiles/RT.dir
+ 
+-build CMakeFiles/RT.dir/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/RT/main.cpp || cmake_object_order_depends_target_RT
++build CMakeFiles/RT.dir/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/Ray-Tracing/main.cpp || cmake_object_order_depends_target_RT
+   DEP_FILE = CMakeFiles/RT.dir/main.cpp.o.d
+   FLAGS = -g
+   OBJECT_DIR = CMakeFiles/RT.dir
+   OBJECT_FILE_DIR = CMakeFiles/RT.dir
+ 
+-build CMakeFiles/RT.dir/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/RT/tinyxml2.cpp || cmake_object_order_depends_target_RT
++build CMakeFiles/RT.dir/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/Ray-Tracing/tinyxml2.cpp || cmake_object_order_depends_target_RT
+   DEP_FILE = CMakeFiles/RT.dir/tinyxml2.cpp.o.d
+   FLAGS = -g
+   OBJECT_DIR = CMakeFiles/RT.dir
+@@ -82,7 +82,7 @@
+ # Utility command for edit_cache
+ 
+ build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+-  COMMAND = cd /home/gabriel/CLionProjects/RT/cmake-build-debug && /snap/clion/189/bin/cmake/linux/bin/ccmake -S/home/gabriel/CLionProjects/RT -B/home/gabriel/CLionProjects/RT/cmake-build-debug
++  COMMAND = cd /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug && /snap/clion/189/bin/cmake/linux/bin/ccmake -S/home/gabriel/CLionProjects/Ray-Tracing -B/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+   DESC = Running CMake cache editor...
+   pool = console
+   restat = 1
+@@ -94,7 +94,7 @@
+ # Utility command for rebuild_cache
+ 
+ build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+-  COMMAND = cd /home/gabriel/CLionProjects/RT/cmake-build-debug && /snap/clion/189/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/RT -B/home/gabriel/CLionProjects/RT/cmake-build-debug
++  COMMAND = cd /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug && /snap/clion/189/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/Ray-Tracing -B/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+   DESC = Running CMake to regenerate build system...
+   pool = console
+   restat = 1
+@@ -110,7 +110,7 @@
+ # =============================================================================
+ 
+ #############################################
+-# Folder: /home/gabriel/CLionProjects/RT/cmake-build-debug
++# Folder: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+ 
+ build all: phony RT
+ 
+Index: cmake-build-debug/CMakeFiles/CMakeOutput.log
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>The system is: Linux - 5.4.0-91-generic - x86_64\nCompiling the C compiler identification source file \"CMakeCCompilerId.c\" succeeded.\nCompiler: /usr/bin/cc \nBuild flags: \nId flags:  \n\nThe output was:\n0\n\n\nCompilation of the C compiler identification source \"CMakeCCompilerId.c\" produced \"a.out\"\n\nThe C compiler identification is GNU, found in \"/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.out\"\n\nCompiling the CXX compiler identification source file \"CMakeCXXCompilerId.cpp\" succeeded.\nCompiler: /usr/bin/c++ \nBuild flags: \nId flags:  \n\nThe output was:\n0\n\n\nCompilation of the CXX compiler identification source \"CMakeCXXCompilerId.cpp\" produced \"a.out\"\n\nThe CXX compiler identification is GNU, found in \"/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.out\"\n\nDetecting C compiler ABI info compiled with the following output:\nChange Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp\n\nRun Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6c767 && [1/2] Building C object CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o\nUsing built-in specs.\nCOLLECT_GCC=/usr/bin/cc\nOFFLOAD_TARGET_NAMES=nvptx-none:hsa\nOFFLOAD_TARGET_DEFAULT=1\nTarget: x86_64-linux-gnu\nConfigured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu\nThread model: posix\ngcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) \nCOLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\n /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccY9qAmP.s\nGNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)\n\tcompiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP\n\nGGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072\nignoring nonexistent directory \"/usr/local/include/x86_64-linux-gnu\"\nignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed\"\nignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/include\"\n#include \"...\" search starts here:\n#include <...> search starts here:\n /usr/lib/gcc/x86_64-linux-gnu/9/include\n /usr/local/include\n /usr/include/x86_64-linux-gnu\n /usr/include\nEnd of search list.\nGNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)\n\tcompiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP\n\nGGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072\nCompiler executable checksum: c0c95c0b4209efec1c1892d5ff24030b\nCOLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\n as -v --64 -o CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o /tmp/ccY9qAmP.s\nGNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34\nCOMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/\nLIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/\nCOLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'\n[2/2] Linking C executable cmTC_6c767\nUsing built-in specs.\nCOLLECT_GCC=/usr/bin/cc\nCOLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper\nOFFLOAD_TARGET_NAMES=nvptx-none:hsa\nOFFLOAD_TARGET_DEFAULT=1\nTarget: x86_64-linux-gnu\nConfigured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu\nThread model: posix\ngcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) \nCOMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/\nLIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/\nCOLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6c767' '-mtune=generic' '-march=x86-64'\n /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqimsf9.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6c767 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o\nCOLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6c767' '-mtune=generic' '-march=x86-64'\n\n\n\nParsed C implicit include dir info from above output: rv=done\n  found start of include info\n  found start of implicit include info\n    add: [/usr/lib/gcc/x86_64-linux-gnu/9/include]\n    add: [/usr/local/include]\n    add: [/usr/include/x86_64-linux-gnu]\n    add: [/usr/include]\n  end of search list found\n  collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/9/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/9/include]\n  collapse include dir [/usr/local/include] ==> [/usr/local/include]\n  collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]\n  collapse include dir [/usr/include] ==> [/usr/include]\n  implicit include dirs: [/usr/lib/gcc/x86_64-linux-gnu/9/include;/usr/local/include;/usr/include/x86_64-linux-gnu;/usr/include]\n\n\nParsed C implicit link information from above output:\n  link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]\n  ignore line: [Change Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp]\n  ignore line: []\n  ignore line: [Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6c767 && [1/2] Building C object CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o]\n  ignore line: [Using built-in specs.]\n  ignore line: [COLLECT_GCC=/usr/bin/cc]\n  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]\n  ignore line: [OFFLOAD_TARGET_DEFAULT=1]\n  ignore line: [Target: x86_64-linux-gnu]\n  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]\n  ignore line: [Thread model: posix]\n  ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']\n  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccY9qAmP.s]\n  ignore line: [GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)]\n  ignore line: [\tcompiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]\n  ignore line: []\n  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]\n  ignore line: [ignoring nonexistent directory \"/usr/local/include/x86_64-linux-gnu\"]\n  ignore line: [ignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed\"]\n  ignore line: [ignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/include\"]\n  ignore line: [#include \"...\" search starts here:]\n  ignore line: [#include <...> search starts here:]\n  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/include]\n  ignore line: [ /usr/local/include]\n  ignore line: [ /usr/include/x86_64-linux-gnu]\n  ignore line: [ /usr/include]\n  ignore line: [End of search list.]\n  ignore line: [GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)]\n  ignore line: [\tcompiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]\n  ignore line: []\n  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]\n  ignore line: [Compiler executable checksum: c0c95c0b4209efec1c1892d5ff24030b]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']\n  ignore line: [ as -v --64 -o CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o /tmp/ccY9qAmP.s]\n  ignore line: [GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34]\n  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]\n  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']\n  ignore line: [[2/2] Linking C executable cmTC_6c767]\n  ignore line: [Using built-in specs.]\n  ignore line: [COLLECT_GCC=/usr/bin/cc]\n  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper]\n  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]\n  ignore line: [OFFLOAD_TARGET_DEFAULT=1]\n  ignore line: [Target: x86_64-linux-gnu]\n  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]\n  ignore line: [Thread model: posix]\n  ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]\n  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]\n  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6c767' '-mtune=generic' '-march=x86-64']\n  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqimsf9.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6c767 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/collect2] ==> ignore\n    arg [-plugin] ==> ignore\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so] ==> ignore\n    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper] ==> ignore\n    arg [-plugin-opt=-fresolution=/tmp/ccqimsf9.res] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore\n    arg [-plugin-opt=-pass-through=-lc] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore\n    arg [--build-id] ==> ignore\n    arg [--eh-frame-hdr] ==> ignore\n    arg [-m] ==> ignore\n    arg [elf_x86_64] ==> ignore\n    arg [--hash-style=gnu] ==> ignore\n    arg [--as-needed] ==> ignore\n    arg [-dynamic-linker] ==> ignore\n    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore\n    arg [-pie] ==> ignore\n    arg [-znow] ==> ignore\n    arg [-zrelro] ==> ignore\n    arg [-o] ==> ignore\n    arg [cmTC_6c767] ==> ignore\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib]\n    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]\n    arg [-L/lib/../lib] ==> dir [/lib/../lib]\n    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]\n    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..]\n    arg [CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o] ==> ignore\n    arg [-lgcc] ==> lib [gcc]\n    arg [--push-state] ==> ignore\n    arg [--as-needed] ==> ignore\n    arg [-lgcc_s] ==> lib [gcc_s]\n    arg [--pop-state] ==> ignore\n    arg [-lc] ==> lib [c]\n    arg [-lgcc] ==> lib [gcc]\n    arg [--push-state] ==> ignore\n    arg [--as-needed] ==> ignore\n    arg [-lgcc_s] ==> lib [gcc_s]\n    arg [--pop-state] ==> ignore\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]\n  collapse obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]\n  collapse obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]\n  collapse obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9] ==> [/usr/lib/gcc/x86_64-linux-gnu/9]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib] ==> [/usr/lib]\n  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]\n  collapse library dir [/lib/../lib] ==> [/lib]\n  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]\n  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> [/usr/lib]\n  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]\n  implicit objs: [/usr/lib/x86_64-linux-gnu/Scrt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o;/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o;/usr/lib/x86_64-linux-gnu/crtn.o]\n  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/9;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]\n  implicit fwks: []\n\n\nDetecting CXX compiler ABI info compiled with the following output:\nChange Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp\n\nRun Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6b558 && [1/2] Building CXX object CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o\nUsing built-in specs.\nCOLLECT_GCC=/usr/bin/c++\nOFFLOAD_TARGET_NAMES=nvptx-none:hsa\nOFFLOAD_TARGET_DEFAULT=1\nTarget: x86_64-linux-gnu\nConfigured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu\nThread model: posix\ngcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) \nCOLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\n /usr/lib/gcc/x86_64-linux-gnu/9/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccAcSiaN.s\nGNU C++14 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)\n\tcompiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP\n\nGGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072\nignoring duplicate directory \"/usr/include/x86_64-linux-gnu/c++/9\"\nignoring nonexistent directory \"/usr/local/include/x86_64-linux-gnu\"\nignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed\"\nignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/include\"\n#include \"...\" search starts here:\n#include <...> search starts here:\n /usr/include/c++/9\n /usr/include/x86_64-linux-gnu/c++/9\n /usr/include/c++/9/backward\n /usr/lib/gcc/x86_64-linux-gnu/9/include\n /usr/local/include\n /usr/include/x86_64-linux-gnu\n /usr/include\nEnd of search list.\nGNU C++14 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)\n\tcompiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP\n\nGGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072\nCompiler executable checksum: 65fe925b83d3956b533de4aaba7dace0\nCOLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\n as -v --64 -o CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccAcSiaN.s\nGNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34\nCOMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/\nLIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/\nCOLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\n[2/2] Linking CXX executable cmTC_6b558\nUsing built-in specs.\nCOLLECT_GCC=/usr/bin/c++\nCOLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper\nOFFLOAD_TARGET_NAMES=nvptx-none:hsa\nOFFLOAD_TARGET_DEFAULT=1\nTarget: x86_64-linux-gnu\nConfigured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu\nThread model: posix\ngcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) \nCOMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/\nLIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/\nCOLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6b558' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\n /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccdNZiC4.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6b558 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o\nCOLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6b558' '-shared-libgcc' '-mtune=generic' '-march=x86-64'\n\n\n\nParsed CXX implicit include dir info from above output: rv=done\n  found start of include info\n  found start of implicit include info\n    add: [/usr/include/c++/9]\n    add: [/usr/include/x86_64-linux-gnu/c++/9]\n    add: [/usr/include/c++/9/backward]\n    add: [/usr/lib/gcc/x86_64-linux-gnu/9/include]\n    add: [/usr/local/include]\n    add: [/usr/include/x86_64-linux-gnu]\n    add: [/usr/include]\n  end of search list found\n  collapse include dir [/usr/include/c++/9] ==> [/usr/include/c++/9]\n  collapse include dir [/usr/include/x86_64-linux-gnu/c++/9] ==> [/usr/include/x86_64-linux-gnu/c++/9]\n  collapse include dir [/usr/include/c++/9/backward] ==> [/usr/include/c++/9/backward]\n  collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/9/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/9/include]\n  collapse include dir [/usr/local/include] ==> [/usr/local/include]\n  collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]\n  collapse include dir [/usr/include] ==> [/usr/include]\n  implicit include dirs: [/usr/include/c++/9;/usr/include/x86_64-linux-gnu/c++/9;/usr/include/c++/9/backward;/usr/lib/gcc/x86_64-linux-gnu/9/include;/usr/local/include;/usr/include/x86_64-linux-gnu;/usr/include]\n\n\nParsed CXX implicit link information from above output:\n  link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]\n  ignore line: [Change Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp]\n  ignore line: []\n  ignore line: [Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6b558 && [1/2] Building CXX object CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o]\n  ignore line: [Using built-in specs.]\n  ignore line: [COLLECT_GCC=/usr/bin/c++]\n  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]\n  ignore line: [OFFLOAD_TARGET_DEFAULT=1]\n  ignore line: [Target: x86_64-linux-gnu]\n  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]\n  ignore line: [Thread model: posix]\n  ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']\n  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccAcSiaN.s]\n  ignore line: [GNU C++14 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)]\n  ignore line: [\tcompiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]\n  ignore line: []\n  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]\n  ignore line: [ignoring duplicate directory \"/usr/include/x86_64-linux-gnu/c++/9\"]\n  ignore line: [ignoring nonexistent directory \"/usr/local/include/x86_64-linux-gnu\"]\n  ignore line: [ignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed\"]\n  ignore line: [ignoring nonexistent directory \"/usr/lib/gcc/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/include\"]\n  ignore line: [#include \"...\" search starts here:]\n  ignore line: [#include <...> search starts here:]\n  ignore line: [ /usr/include/c++/9]\n  ignore line: [ /usr/include/x86_64-linux-gnu/c++/9]\n  ignore line: [ /usr/include/c++/9/backward]\n  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/include]\n  ignore line: [ /usr/local/include]\n  ignore line: [ /usr/include/x86_64-linux-gnu]\n  ignore line: [ /usr/include]\n  ignore line: [End of search list.]\n  ignore line: [GNU C++14 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)]\n  ignore line: [\tcompiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]\n  ignore line: []\n  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]\n  ignore line: [Compiler executable checksum: 65fe925b83d3956b533de4aaba7dace0]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']\n  ignore line: [ as -v --64 -o CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccAcSiaN.s]\n  ignore line: [GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34]\n  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]\n  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']\n  ignore line: [[2/2] Linking CXX executable cmTC_6b558]\n  ignore line: [Using built-in specs.]\n  ignore line: [COLLECT_GCC=/usr/bin/c++]\n  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper]\n  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]\n  ignore line: [OFFLOAD_TARGET_DEFAULT=1]\n  ignore line: [Target: x86_64-linux-gnu]\n  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]\n  ignore line: [Thread model: posix]\n  ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]\n  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]\n  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]\n  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6b558' '-shared-libgcc' '-mtune=generic' '-march=x86-64']\n  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccdNZiC4.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6b558 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/collect2] ==> ignore\n    arg [-plugin] ==> ignore\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so] ==> ignore\n    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper] ==> ignore\n    arg [-plugin-opt=-fresolution=/tmp/ccdNZiC4.res] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore\n    arg [-plugin-opt=-pass-through=-lc] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore\n    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore\n    arg [--build-id] ==> ignore\n    arg [--eh-frame-hdr] ==> ignore\n    arg [-m] ==> ignore\n    arg [elf_x86_64] ==> ignore\n    arg [--hash-style=gnu] ==> ignore\n    arg [--as-needed] ==> ignore\n    arg [-dynamic-linker] ==> ignore\n    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore\n    arg [-pie] ==> ignore\n    arg [-znow] ==> ignore\n    arg [-zrelro] ==> ignore\n    arg [-o] ==> ignore\n    arg [cmTC_6b558] ==> ignore\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib]\n    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]\n    arg [-L/lib/../lib] ==> dir [/lib/../lib]\n    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]\n    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]\n    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..]\n    arg [CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore\n    arg [-lstdc++] ==> lib [stdc++]\n    arg [-lm] ==> lib [m]\n    arg [-lgcc_s] ==> lib [gcc_s]\n    arg [-lgcc] ==> lib [gcc]\n    arg [-lc] ==> lib [c]\n    arg [-lgcc_s] ==> lib [gcc_s]\n    arg [-lgcc] ==> lib [gcc]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o]\n    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]\n  collapse obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> [/usr/lib/x86_64-linux-gnu/Scrt1.o]\n  collapse obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]\n  collapse obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9] ==> [/usr/lib/gcc/x86_64-linux-gnu/9]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib] ==> [/usr/lib]\n  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]\n  collapse library dir [/lib/../lib] ==> [/lib]\n  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]\n  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]\n  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> [/usr/lib]\n  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]\n  implicit objs: [/usr/lib/x86_64-linux-gnu/Scrt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o;/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o;/usr/lib/x86_64-linux-gnu/crtn.o]\n  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/9;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]\n  implicit fwks: []\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/CMakeFiles/CMakeOutput.log b/cmake-build-debug/CMakeFiles/CMakeOutput.log
+--- a/cmake-build-debug/CMakeFiles/CMakeOutput.log	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/CMakeFiles/CMakeOutput.log	(date 1652233931915)
+@@ -10,7 +10,7 @@
+ 
+ Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+ 
+-The C compiler identification is GNU, found in "/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.out"
++The C compiler identification is GNU, found in "/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.out"
+ 
+ Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+ Compiler: /usr/bin/c++ 
+@@ -23,12 +23,12 @@
+ 
+ Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+ 
+-The CXX compiler identification is GNU, found in "/home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.out"
++The CXX compiler identification is GNU, found in "/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.out"
+ 
+ Detecting C compiler ABI info compiled with the following output:
+-Change Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp
++Change Dir: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/CMakeTmp
+ 
+-Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6c767 && [1/2] Building C object CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o
++Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_d4c7f && [1/2] Building C object CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o
+ Using built-in specs.
+ COLLECT_GCC=/usr/bin/cc
+ OFFLOAD_TARGET_NAMES=nvptx-none:hsa
+@@ -37,8 +37,8 @@
+ Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+ Thread model: posix
+ gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
+-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+- /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccY9qAmP.s
++COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
++ /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccDOj391.s
+ GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)
+ 	compiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
+ 
+@@ -58,13 +58,13 @@
+ 
+ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ Compiler executable checksum: c0c95c0b4209efec1c1892d5ff24030b
+-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+- as -v --64 -o CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o /tmp/ccY9qAmP.s
++COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
++ as -v --64 -o CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o /tmp/ccDOj391.s
+ GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34
+ COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
+ LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/
+-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
+-[2/2] Linking C executable cmTC_6c767
++COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
++[2/2] Linking C executable cmTC_d4c7f
+ Using built-in specs.
+ COLLECT_GCC=/usr/bin/cc
+ COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper
+@@ -76,9 +76,9 @@
+ gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
+ COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
+ LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/
+-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6c767' '-mtune=generic' '-march=x86-64'
+- /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqimsf9.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6c767 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o
+-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6c767' '-mtune=generic' '-march=x86-64'
++COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_d4c7f' '-mtune=generic' '-march=x86-64'
++ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccaNsMVi.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_d4c7f /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o
++COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_d4c7f' '-mtune=generic' '-march=x86-64'
+ 
+ 
+ 
+@@ -99,9 +99,9 @@
+ 
+ Parsed C implicit link information from above output:
+   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+-  ignore line: [Change Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp]
++  ignore line: [Change Dir: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/CMakeTmp]
+   ignore line: []
+-  ignore line: [Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6c767 && [1/2] Building C object CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o]
++  ignore line: [Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_d4c7f && [1/2] Building C object CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o]
+   ignore line: [Using built-in specs.]
+   ignore line: [COLLECT_GCC=/usr/bin/cc]
+   ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]
+@@ -110,8 +110,8 @@
+   ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+   ignore line: [Thread model: posix]
+   ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+-  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccY9qAmP.s]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
++  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccDOj391.s]
+   ignore line: [GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)]
+   ignore line: [	compiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]
+   ignore line: []
+@@ -131,13 +131,13 @@
+   ignore line: []
+   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+   ignore line: [Compiler executable checksum: c0c95c0b4209efec1c1892d5ff24030b]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o /tmp/ccY9qAmP.s]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
++  ignore line: [ as -v --64 -o CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o /tmp/ccDOj391.s]
+   ignore line: [GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34]
+   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]
+   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
+-  ignore line: [[2/2] Linking C executable cmTC_6c767]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
++  ignore line: [[2/2] Linking C executable cmTC_d4c7f]
+   ignore line: [Using built-in specs.]
+   ignore line: [COLLECT_GCC=/usr/bin/cc]
+   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper]
+@@ -149,13 +149,13 @@
+   ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]
+   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]
+   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6c767' '-mtune=generic' '-march=x86-64']
+-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqimsf9.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6c767 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_d4c7f' '-mtune=generic' '-march=x86-64']
++  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccaNsMVi.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_d4c7f /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/collect2] ==> ignore
+     arg [-plugin] ==> ignore
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so] ==> ignore
+     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper] ==> ignore
+-    arg [-plugin-opt=-fresolution=/tmp/ccqimsf9.res] ==> ignore
++    arg [-plugin-opt=-fresolution=/tmp/ccaNsMVi.res] ==> ignore
+     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+     arg [-plugin-opt=-pass-through=-lc] ==> ignore
+@@ -173,7 +173,7 @@
+     arg [-znow] ==> ignore
+     arg [-zrelro] ==> ignore
+     arg [-o] ==> ignore
+-    arg [cmTC_6c767] ==> ignore
++    arg [cmTC_d4c7f] ==> ignore
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o]
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o]
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o]
+@@ -185,7 +185,7 @@
+     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+     arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..]
+-    arg [CMakeFiles/cmTC_6c767.dir/CMakeCCompilerABI.c.o] ==> ignore
++    arg [CMakeFiles/cmTC_d4c7f.dir/CMakeCCompilerABI.c.o] ==> ignore
+     arg [-lgcc] ==> lib [gcc]
+     arg [--push-state] ==> ignore
+     arg [--as-needed] ==> ignore
+@@ -217,9 +217,9 @@
+ 
+ 
+ Detecting CXX compiler ABI info compiled with the following output:
+-Change Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp
++Change Dir: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/CMakeTmp
+ 
+-Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6b558 && [1/2] Building CXX object CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o
++Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_149c6 && [1/2] Building CXX object CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o
+ Using built-in specs.
+ COLLECT_GCC=/usr/bin/c++
+ OFFLOAD_TARGET_NAMES=nvptx-none:hsa
+@@ -228,8 +228,8 @@
+ Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+ Thread model: posix
+ gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
+-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+- /usr/lib/gcc/x86_64-linux-gnu/9/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccAcSiaN.s
++COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
++ /usr/lib/gcc/x86_64-linux-gnu/9/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cciHAa3V.s
+ GNU C++14 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)
+ 	compiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
+ 
+@@ -253,13 +253,13 @@
+ 
+ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ Compiler executable checksum: 65fe925b83d3956b533de4aaba7dace0
+-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+- as -v --64 -o CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccAcSiaN.s
++COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
++ as -v --64 -o CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o /tmp/cciHAa3V.s
+ GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34
+ COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
+ LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/
+-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+-[2/2] Linking CXX executable cmTC_6b558
++COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
++[2/2] Linking CXX executable cmTC_149c6
+ Using built-in specs.
+ COLLECT_GCC=/usr/bin/c++
+ COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper
+@@ -271,9 +271,9 @@
+ gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
+ COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
+ LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/
+-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6b558' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+- /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccdNZiC4.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6b558 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o
+-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6b558' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
++COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_149c6' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
++ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/cc91WQ0b.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_149c6 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o
++COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_149c6' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ 
+ 
+ 
+@@ -300,9 +300,9 @@
+ 
+ Parsed CXX implicit link information from above output:
+   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+-  ignore line: [Change Dir: /home/gabriel/CLionProjects/RT/cmake-build-debug/CMakeFiles/CMakeTmp]
++  ignore line: [Change Dir: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/CMakeFiles/CMakeTmp]
+   ignore line: []
+-  ignore line: [Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_6b558 && [1/2] Building CXX object CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o]
++  ignore line: [Run Build Command(s):/snap/clion/189/bin/ninja/linux/ninja cmTC_149c6 && [1/2] Building CXX object CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o]
+   ignore line: [Using built-in specs.]
+   ignore line: [COLLECT_GCC=/usr/bin/c++]
+   ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]
+@@ -311,8 +311,8 @@
+   ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+   ignore line: [Thread model: posix]
+   ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+-  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccAcSiaN.s]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
++  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /snap/clion/189/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cciHAa3V.s]
+   ignore line: [GNU C++14 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)]
+   ignore line: [	compiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]
+   ignore line: []
+@@ -336,13 +336,13 @@
+   ignore line: []
+   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+   ignore line: [Compiler executable checksum: 65fe925b83d3956b533de4aaba7dace0]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccAcSiaN.s]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
++  ignore line: [ as -v --64 -o CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o /tmp/cciHAa3V.s]
+   ignore line: [GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34]
+   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]
+   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+-  ignore line: [[2/2] Linking CXX executable cmTC_6b558]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
++  ignore line: [[2/2] Linking CXX executable cmTC_149c6]
+   ignore line: [Using built-in specs.]
+   ignore line: [COLLECT_GCC=/usr/bin/c++]
+   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper]
+@@ -354,13 +354,13 @@
+   ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) ]
+   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]
+   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]
+-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_6b558' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccdNZiC4.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_6b558 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]
++  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_149c6' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
++  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/cc91WQ0b.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_149c6 /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/collect2] ==> ignore
+     arg [-plugin] ==> ignore
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so] ==> ignore
+     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper] ==> ignore
+-    arg [-plugin-opt=-fresolution=/tmp/ccdNZiC4.res] ==> ignore
++    arg [-plugin-opt=-fresolution=/tmp/cc91WQ0b.res] ==> ignore
+     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+     arg [-plugin-opt=-pass-through=-lc] ==> ignore
+@@ -378,7 +378,7 @@
+     arg [-znow] ==> ignore
+     arg [-zrelro] ==> ignore
+     arg [-o] ==> ignore
+-    arg [cmTC_6b558] ==> ignore
++    arg [cmTC_149c6] ==> ignore
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o]
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o]
+     arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o]
+@@ -390,7 +390,7 @@
+     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+     arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..]
+-    arg [CMakeFiles/cmTC_6b558.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
++    arg [CMakeFiles/cmTC_149c6.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+     arg [-lstdc++] ==> lib [stdc++]
+     arg [-lm] ==> lib [m]
+     arg [-lgcc_s] ==> lib [gcc_s]

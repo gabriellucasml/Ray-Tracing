@@ -1,0 +1,15 @@
+Index: cmake-build-debug/CMakeFiles/clion-log.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/snap/clion/189/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/189/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/RT -B /home/gabriel/CLionProjects/RT/cmake-build-debug\n-- Configuring done\n-- Generating done\n-- Build files have been written to: /home/gabriel/CLionProjects/RT/cmake-build-debug\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake-build-debug/CMakeFiles/clion-log.txt b/cmake-build-debug/CMakeFiles/clion-log.txt
+--- a/cmake-build-debug/CMakeFiles/clion-log.txt	(revision 3d1d84d129ecef379dd5ea4b599cbf90862e30fb)
++++ b/cmake-build-debug/CMakeFiles/clion-log.txt	(date 1652399108747)
+@@ -1,4 +1,0 @@
+-/snap/clion/189/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/189/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/RT -B /home/gabriel/CLionProjects/RT/cmake-build-debug
+--- Configuring done
+--- Generating done
+--- Build files have been written to: /home/gabriel/CLionProjects/RT/cmake-build-debug
