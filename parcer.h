@@ -7,6 +7,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 #include "tinyxml2.h"
 
 struct RunningOptions{
@@ -89,21 +90,26 @@ public:
                             } else {
                                 std::string auxbl = background->Attribute("bl"), auxbr = background->Attribute("br"), auxtl = background->Attribute("tl"), auxtr = background->Attribute("tr");
                                 color bl(0,0,0),tl(0,0,0),br(0,0,0),tr(0,0,0);
-                                char *tokenBl = std::strtok(const_cast<char*>(auxbl.c_str()), " "),*tokenBr = std::strtok(const_cast<char*>(auxbr.c_str()), " "),*tokenTl = std::strtok(const_cast<char*>(auxtl.c_str()), " "),*tokenTr = std::strtok(const_cast<char*>(auxtr.c_str()), " ");
-                                int i = 0;
-                                while(tokenBl != nullptr & tokenBr != nullptr & tokenTl != nullptr & tokenTr != nullptr){
-                                    try {
-                                        bl[i] = std::stoi(tokenBl);
-                                        br[i] = std::stoi(tokenBr);
-                                        tl[i] = std::stoi(tokenTl);
-                                        tr[i] = std::stoi(tokenTr);
-                                        tokenBl = std::strtok(nullptr, " ");
-                                        tokenBr = std::strtok(nullptr, " ");
-                                        tokenTl = std::strtok(nullptr, " ");
-                                        tokenTr = std::strtok(nullptr, " ");
-                                        i++;
+                                std::vector<std::string> tokensBl, tokensBr, tokensTl, tokensTr;
+                                std::stringstream sstreamBl(auxbl), sstreamBr(auxbr), sstreamTl(auxtl), sstreamTr(auxtr);
+                                std::string interBl, interBr, interTl, interTr;
+                                while(std::getline(sstreamBl, interBl, ' '))
+                                    tokensBl.push_back(interBl);
+                                while(std::getline(sstreamBr, interBr, ' '))
+                                    tokensBr.push_back(interBr);
+                                while(std::getline(sstreamTl, interTl, ' '))
+                                    tokensTl.push_back(interTl);
+                                while(std::getline(sstreamTr, interTr, ' '))
+                                    tokensTr.push_back(interTr);
+                                for(int i = 0; i < 3; i++){
+                                    try{
+                                        bl[i] = std::stoi(tokensBl[i]);
+                                        br[i] = std::stoi(tokensBr[i]);
+                                        tl[i] = std::stoi(tokensTl[i]);
+                                        tr[i] = std::stoi(tokensTr[i]);
                                     }catch(std::exception& e){
-                                        std::cout << "Failed to convert color vectors. Setting default value" << std::endl;
+                                        std::cout<< "Unable to process colors, setting default color" << std::endl;
+                                        return ro;
                                     }
                                 }
                                 ro.backgroundBl = bl;
