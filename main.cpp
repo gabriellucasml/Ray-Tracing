@@ -5,22 +5,30 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 
 color ray_color(const ray& r, color tr, color tl, color br, color bl) {
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);
-    color c1 = (1.0-t)*br + t*tr;
-    color c2 = (1.0-t)*bl + t*tl;
+    color c1 = (1.0-t)*bl + t*tr;
+    color c2 = (1.0-t)*br + t*tl;
     auto h = 0.5*(unit_direction.x() + 1.0);
     return (1.0-h)*c1 + h*c2;
 }
 
 int main(int argc, char* argv[]) {
-    struct RunningOptions ro = Parser::parse(argc, argv);
+    struct RunningOptions ro;
+    try {
+        ro = Parser::parse(argc, argv);
+    }catch(std::exception& e){
+        std::cout << e.what() << std::endl;
+        return -1;
+    }
+    if(ro.help){
+        return 0;
+    }
     // Image
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 1920;
+    const auto aspect_ratio = 1;
+    const int image_width = 500;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
     // Camera
@@ -36,10 +44,7 @@ int main(int argc, char* argv[]) {
 
     // Render
     std::ofstream file;
-    std::stringstream fileName;
-    fileName << ro.filmFilename << "." << ro.filmImgtype;
-    std::string placeholder = fileName.str();
-    file.open(placeholder);
+    file.open(ro.filmFilename+'.'+ro.filmImgtype);
     file << "P3\n" << image_width << " " << image_height << "\n255\n";
 
     for (int j = image_height-1; j >= 0; --j) {
@@ -48,7 +53,7 @@ int main(int argc, char* argv[]) {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixel_color = ray_color(r, color(1,0,0),color(0,1,0),color(0,0,1),color(1,1,0));
+            color pixel_color = ray_color(r, ro.backgroundTr/255,ro.backgroundTl/255,ro.backgroundBr/255,ro.backgroundBl/255);
             write_color(file, pixel_color);
         }
     }
