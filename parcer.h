@@ -9,17 +9,24 @@
 #include <sstream>
 #include <vector>
 #include "tinyxml2.h"
+#include "primitive.h"
+#include "sphere.h"
 
 struct RunningOptions{
     bool  help = false;
     std::string cameraType;
+    int fovy = 1;
+    std::vector<int> screen_window{1,1,1,1};
+    std::string materialType = "flat";
+    color materialColor = color(0,0,0);
+    std::vector<Primitive*> objects;
     std::string filmType;
     int filmX_res = 0;
     int filmY_res = 0;
     std::string filmFilename;
     std::string filmImgtype;
-    std::string backgroundType;
-    std::string backgroundMapping;
+    std::string backgroundType = "color";
+    std::string backgroundMapping = "screen";
     color backgroundColor = color(0,0,0);
     color backgroundBl = color(0,0,0);
     color backgroundBr = color(0,0,0);
@@ -48,7 +55,26 @@ public:
                             auto RT3 = doc.RootElement();
 
                             ro.cameraType = RT3->FirstChildElement("camera")->Attribute("type");
-
+                            if(std::strcmp(ro.cameraType.c_str(), "perspective")==0){
+                                try {
+                                    ro.fovy = std::stoi(RT3->FirstChildElement("camera")->Attribute("fovy"));
+                                }catch(std::exception& e){
+                                    std::cout << "Unable to determine fovy. Setting to default" << std::endl;
+                                }
+                            }else if(std::strcmp(ro.cameraType.c_str(), "orthographic") == 0){
+                                std::string sScreen_window = RT3->FirstChildElement("camera")->Attribute("screen_window");
+                                const char *token = std::strtok(const_cast<char *>(sScreen_window.c_str()), " ");
+                                int i = 0;
+                                while(token != nullptr){
+                                    try{
+                                        ro.screen_window[i] = std::stoi(token);
+                                        token = std::strtok(nullptr, " ");
+                                        i++;
+                                    }catch(std::exception& e){
+                                        std::cout<<"Unable to retrieve screen window coordinates. Setting to default." << std::endl;
+                                    }
+                                }
+                            }
                             ro.filmType = RT3->FirstChildElement("film")->Attribute("type");
                             try {
                                 ro.filmX_res = std::stoi(RT3->FirstChildElement("film")->Attribute("x_res"));
@@ -67,26 +93,29 @@ public:
 
                             auto background = RT3->FirstChildElement("background");
                             ro.backgroundType = background->Attribute("type");
-                            ro.backgroundMapping = background->Attribute("mapping");
+                                if(background->Attribute("mapping"))
+                                    ro.backgroundMapping = background->Attribute("mapping");
+                                else
+                                    std::cout << "Unable to retrieve background mapping. Setting to default." << std::endl;
                             if (background->Attribute("color")) {
-                                std::string aux = background->Attribute("color");
-                                color c(0,0,0);
-                                char *token = std::strtok(const_cast<char *>(aux.c_str()), " ");
-                                int i = 0;
-                                while(token != nullptr){
-                                    try {
-                                        c[i] = std::stoi(token);
-                                        token = std::strtok(nullptr, " ");
-                                        i++;
-                                    }catch(std::exception& e){
-                                        std::cout << "Failed to convert color vector. Setting default value" << std::endl;
-                                    }
+                            std::string aux = background->Attribute("color");
+                            color c(0,0,0);
+                            char *token = std::strtok(const_cast<char *>(aux.c_str()), " ");
+                            int i = 0;
+                            while(token != nullptr){
+                                try {
+                                    c[i] = std::stoi(token);
+                                    token = std::strtok(nullptr, " ");
+                                    i++;
+                                }catch(std::exception& e){
+                                    std::cout << "Failed to retrieve color vector. Setting to default value" << std::endl;
                                 }
-                                ro.backgroundColor = c;
-                                ro.backgroundBl = c;
-                                ro.backgroundBr = c;
-                                ro.backgroundTl = c;
-                                ro.backgroundTr = c;
+                            }
+                            ro.backgroundColor = c;
+                            ro.backgroundBl = c;
+                            ro.backgroundBr = c;
+                            ro.backgroundTl = c;
+                            ro.backgroundTr = c;
                             } else {
                                 std::string auxbl = background->Attribute("bl"), auxbr = background->Attribute("br"), auxtl = background->Attribute("tl"), auxtr = background->Attribute("tr");
                                 color bl(0,0,0),tl(0,0,0),br(0,0,0),tr(0,0,0);
@@ -116,6 +145,75 @@ public:
                                 ro.backgroundBr = br;
                                 ro.backgroundTl = tl;
                                 ro.backgroundTr = tr;
+                            }
+
+                            //Material
+                            if(RT3->FirstChildElement("material")){
+                                if(RT3->FirstChildElement("material")->Attribute("type"))
+                                    ro.materialType = RT3->FirstChildElement("material")->Attribute("type");
+                                else
+                                    std::cout << "No material type retrieved. Setting to default" << std::endl;
+                                if(RT3->FirstChildElement("material")->Attribute("color")) {
+                                    std::string aux = RT3->FirstChildElement("material")->Attribute("color");
+                                    color c(0, 0, 0);
+                                    char *token = std::strtok(const_cast<char *>(aux.c_str()), " ");
+                                    int i = 0;
+                                    while (token != nullptr) {
+                                        try {
+                                            c[i] = std::stoi(token);
+                                            token = std::strtok(nullptr, " ");
+                                            i++;
+                                        } catch (std::exception &e) {
+                                            std::cout << "Failed to retrieve color vector. Setting to default value"
+                                                      << std::endl;
+                                        }
+                                    }
+                                    ro.materialColor = c;
+                                }
+                            }
+                            //Objects
+                            if(RT3->FirstChildElement("object")){
+                                auto object = RT3->FirstChildElement("object");
+                                while(object->NextSiblingElement() != nullptr){
+                                    std::string objectType;
+                                    if(object->Attribute("type")){
+                                        objectType = object->Attribute("type");
+                                    }else{
+                                        std::cout << "Object type not defined. Creating sphere." << std::endl;
+                                        objectType = "sphere";
+                                    }
+                                    if(std::strcmp(objectType.c_str(),"sphere") == 0){
+                                        double radius = 1;
+                                        point3 center(0,0,0);
+                                        if(object->Attribute("radius"))
+                                            radius = std::stod(object->Attribute("radius"));
+                                        else
+                                            std::cout << "No radius specified. Setting to default." << std::endl;
+                                        if(object->Attribute("center")){
+                                            std::string aux = object->Attribute("center");
+                                            point3 p(0, 0, 0);
+                                            char *token = std::strtok(const_cast<char *>(aux.c_str()), " ");
+                                            int i = 0;
+                                            while (token != nullptr) {
+                                                try {
+                                                    p[i] = std::stod(token);
+                                                    token = std::strtok(nullptr, " ");
+                                                    i++;
+                                                } catch (std::exception &e) {
+                                                    std::cout << "Failed to retrieve sphere center. Setting to default value"
+                                                              << std::endl;
+                                                }
+                                            }
+                                            center = p;
+                                        }else{
+                                            std::cout << "Failed to retrieve sphere center. Setting to default values"
+                                                      << std::endl;
+                                        }
+                                        auto* s = new Sphere(center,radius,ro.materialColor);
+                                        ro.objects.push_back(s);
+                                    }
+                                    object = object->NextSiblingElement();
+                                }
                             }
                             return ro;
                         }else{

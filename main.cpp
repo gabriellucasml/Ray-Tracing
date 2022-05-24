@@ -11,7 +11,7 @@
 color ray_color(const ray& r, const std::vector<Primitive*>& shapes, color tr, color tl, color br, color bl) {
     for(auto shape : shapes){
         if(shape->intersects(r)){
-            return shape->getColor();
+            return shape->getColor()/255;
         }
     }
 
@@ -34,25 +34,17 @@ int main(int argc, char* argv[]) {
     if(ro.help){
         return 0;
     }
-    //Scene
-    std::vector<Primitive*> shapes;
-    auto *s1 = new Sphere(point3(1,-1,-1),1,color(0,0,255));
-    auto *s2 = new Sphere(point3(2,4,-6),2,color(255,0,0));
-    auto *s3 = new Sphere(point3(1,1,-10), 3,color(0,255,0));
-    shapes.push_back(s1);
-    shapes.push_back(s2);
-    shapes.push_back(s3);
 
     // Image
-    const auto aspect_ratio = 16.0/9.0;
-    const int image_width = 1920;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
+    const int image_width = ro.filmX_res;
+    const int image_height = ro.filmY_res;
+    const auto aspect_ratio = image_width/image_height;
 
     // Camera
 
     auto viewport_height = 2.0;
     auto viewport_width = aspect_ratio * viewport_height;
-    auto focal_length = 1.0;
+    auto focal_length = -1.0;
 
     auto origin = point3(0, 0, 0);
     auto horizontal = vec3(viewport_width, 0, 0);
@@ -70,7 +62,7 @@ int main(int argc, char* argv[]) {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixel_color = ray_color(r, shapes, ro.backgroundTr/255,ro.backgroundTl/255,ro.backgroundBr/255,ro.backgroundBl/255);
+            color pixel_color = ray_color(r, ro.objects, ro.backgroundTr/255,ro.backgroundTl/255,ro.backgroundBr/255,ro.backgroundBl/255);
             write_color(file, pixel_color);
         }
     }

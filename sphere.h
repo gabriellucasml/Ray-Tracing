@@ -34,6 +34,13 @@ public:
         this->radius = radius_;
     }
 
+    color getColor() override{
+        return this->col;
+    }
+    void setColor(const color& col_) override{
+        this->col = col_;
+    }
+
     bool intersects(const ray& r) override{
         vec3 oc = r.origin() - this->center;
         auto a = dot(r.direction(), r.direction());

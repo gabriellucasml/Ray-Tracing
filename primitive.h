@@ -13,10 +13,11 @@ protected:
 public:
     virtual bool intersects(const ray& ray) = 0;
 
-    color getColor(){
+    virtual color getColor(){
         return this->col;
     }
-    void setColor(const color& col_){
+
+    virtual void setColor(const color& col_){
         this->col = col_;
     }
 };
