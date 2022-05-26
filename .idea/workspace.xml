@@ -14,27 +14,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a665fd4c-c49a-4ee5-8c6e-12b6e0f622cb" name="Changes" comment="Implementation of sphere shape">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/.ninja_deps" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/RT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/.ninja_deps" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/RT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml" beforeDir="false" />
+    <list default="true" id="a665fd4c-c49a-4ee5-8c6e-12b6e0f622cb" name="Changes" comment="Implementation of orthographic camera">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scene Files/scene_03.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Scene Files/scene_03.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scene Files/scene_04.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Scene Files/scene_04.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RT.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RT.dir/main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/RT" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/RT" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parcer.h" beforeDir="false" afterPath="$PROJECT_DIR$/parcer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/primitive.h" beforeDir="false" afterPath="$PROJECT_DIR$/primitive.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphere.h" beforeDir="false" afterPath="$PROJECT_DIR$/sphere.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +90,12 @@
       <workItem from="1652390770506" duration="7239000" />
       <workItem from="1652998785060" duration="6217000" />
       <workItem from="1653057396132" duration="1766000" />
-      <workItem from="1653334798153" duration="6254000" />
+      <workItem from="1653334798153" duration="6348000" />
+      <workItem from="1653390074544" duration="3195000" />
+      <workItem from="1653487199651" duration="195000" />
+      <workItem from="1653564636752" duration="1140000" />
+      <workItem from="1653565941832" duration="182000" />
+      <workItem from="1653571393952" duration="1010000" />
     </task>
     <task id="LOCAL-00001" summary="Test: Parser v0.1">
       <created>1652398904455</created>
@@ -126,7 +118,21 @@
       <option name="project" value="LOCAL" />
       <updated>1653015955762</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Parser v0.2">
+      <created>1653358505932</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1653358505932</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Implementation of orthographic camera">
+      <created>1653565994427</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1653565994427</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,6 +165,8 @@
     <MESSAGE value="Test: Parser v0.1" />
     <MESSAGE value="update" />
     <MESSAGE value="Implementation of sphere shape" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implementation of sphere shape" />
+    <MESSAGE value="Parser v0.2" />
+    <MESSAGE value="Implementation of orthographic camera" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementation of orthographic camera" />
   </component>
 </project>

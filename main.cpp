@@ -8,14 +8,17 @@
 #include <iostream>
 #include <fstream>
 
-color ray_color(const ray& r, const std::vector<Primitive*>& shapes, color tr, color tl, color br, color bl) {
+color ray_color(const ray& r, const std::vector<Primitive*>& shapes, const std::string& cameraType, color tr, color tl, color br, color bl) {
     for(auto shape : shapes){
         if(shape->intersects(r)){
             return shape->getColor()/255;
         }
     }
-
-    vec3 unit_direction = unit_vector(r.direction());
+    vec3 unit_direction;
+    if(std::strcmp(cameraType.c_str(), "orthographic")==0)
+        unit_direction = unit_vector(r.origin());
+    else
+        unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);
     color c1 = (1.0-t)*bl + t*tr;
     color c2 = (1.0-t)*br + t*tl;
@@ -38,13 +41,13 @@ int main(int argc, char* argv[]) {
     // Image
     const int image_width = ro.filmX_res;
     const int image_height = ro.filmY_res;
-    const auto aspect_ratio = image_width/image_height;
+    const auto aspect_ratio = static_cast<double>(image_width)/static_cast<double>(image_height);
 
     // Camera
 
-    auto viewport_height = 2.0;
+    auto viewport_height = 5.0;
     auto viewport_width = aspect_ratio * viewport_height;
-    auto focal_length = -1.0;
+    auto focal_length = -1;
 
     auto origin = point3(0, 0, 0);
     auto horizontal = vec3(viewport_width, 0, 0);
@@ -55,16 +58,32 @@ int main(int argc, char* argv[]) {
     std::ofstream file;
     file.open(ro.filmFilename+'.'+ro.filmImgtype);
     file << "P3\n" << image_width << " " << image_height << "\n255\n";
-
-    for (int j = image_height-1; j >= 0; --j) {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
-        for (int i = 0; i < image_width; ++i) {
-            auto u = double(i) / (image_width-1);
-            auto v = double(j) / (image_height-1);
-            ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixel_color = ray_color(r, ro.objects, ro.backgroundTr/255,ro.backgroundTl/255,ro.backgroundBr/255,ro.backgroundBl/255);
-            write_color(file, pixel_color);
+    if(std::strcmp(ro.cameraType.c_str(),"perspective") == 0) {
+        for (int j = image_height - 1; j >= 0; --j) {
+            std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+            for (int i = 0; i < image_width; ++i) {
+                auto u = double(i) / (image_width - 1);
+                auto v = double(j) / (image_height - 1);
+                ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+                color pixel_color = ray_color(r, ro.objects, ro.cameraType, ro.backgroundTr / 255, ro.backgroundTl / 255,
+                                              ro.backgroundBr / 255, ro.backgroundBl / 255);
+                write_color(file, pixel_color);
+            }
         }
+    }else if(std::strcmp(ro.cameraType.c_str(),"orthographic")==0){
+        for (int j = image_height - 1; j >= 0; --j) {
+            std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+            for (int i = 0; i < image_width; ++i) {
+                auto u = double(i) / (image_width - 1);
+                auto v = double(j) / (image_height - 1);
+                ray r(lower_left_corner + u * horizontal + v * vertical - origin, point3(0, 0, 1));
+                color pixel_color = ray_color(r, ro.objects, ro.cameraType, ro.backgroundTr / 255, ro.backgroundTl / 255,
+                                              ro.backgroundBr / 255, ro.backgroundBl / 255);
+                write_color(file, pixel_color);
+            }
+        }
+    }else{
+        std::cout << "Invalid camera setting. Aborting" << std::endl;
     }
     file.close();
 
