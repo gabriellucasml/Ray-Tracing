@@ -9,30 +9,14 @@
 #include <sstream>
 #include <vector>
 #include "tinyxml2.h"
-#include "primitive.h"
-#include "sphere.h"
+#include "../RTEngine/primitive.h"
+#include "../RTEngine/sphere.h"
+#include "../RTEngine/Integrator.h"
+#include "../RTEngine/FlatIntegrator.h"
+#include "../RTEngine/DepthMapIntegrator.h"
+#include "../RTEngine/NormalMapIntegrator.h"
+#include "../RTUtilities/RunningOptions.h"
 
-struct RunningOptions{
-    bool  help = false;
-    std::string cameraType;
-    int fovy = 1;
-    std::vector<int> screen_window{1,1,1,1};
-    std::string materialType = "flat";
-    color materialColor = color(0,0,0);
-    std::vector<Primitive*> objects;
-    std::string filmType;
-    int filmX_res = 0;
-    int filmY_res = 0;
-    std::string filmFilename;
-    std::string filmImgtype;
-    std::string backgroundType = "color";
-    std::string backgroundMapping = "screen";
-    color backgroundColor = color(0,0,0);
-    color backgroundBl = color(0,0,0);
-    color backgroundBr = color(0,0,0);
-    color backgroundTl = color(0,0,0);
-    color backgroundTr = color(0,0,0);
-} RunningOptions;
 
 class Parser{
 public:
@@ -149,6 +133,133 @@ public:
 
                             //Material
                             if(RT3->FirstChildElement("material")){
+                                auto materialElement = RT3->FirstChildElement("material");
+                                do{
+                                    auto material = new Material();
+                                    Integrator* integrator;
+                                    if(materialElement->Attribute("type")) {
+                                        material->setType(materialElement->Attribute("type"));
+                                        if (std::strcmp(material->getType().c_str(), "flat")) {
+                                            integrator = new FlatIntegrator();
+                                        } else if (std::strcmp(material->getType().c_str(), "depth")) {
+                                            integrator = new DepthMapIntegrator();
+                                        } else if (std::strcmp(material->getType().c_str(), "normal")) {
+                                            integrator = new NormalMapIntegrator();
+                                        }
+                                    }else {
+                                        material->setType("flat");
+                                    }
+                                    if(materialElement->Attribute("color")) {
+                                        auto aux = materialElement->Attribute("color");
+                                        color c(0, 0, 0);
+                                        char *token = std::strtok(const_cast<char *>(aux), " ");
+                                        int i = 0;
+                                        while (token != nullptr) {
+                                            try {
+                                                c[i] = std::stoi(token);
+                                                token = std::strtok(nullptr, " ");
+                                                i++;
+                                            } catch (std::exception &e) {
+                                                std::cout << "Failed to retrieve color vector. Setting to default value"
+                                                          << std::endl;
+                                            }
+                                        }
+                                        material->setCol(c);
+                                    }
+                                    if(materialElement->FirstChildElement("object")){
+                                        auto object = materialElement->FirstChildElement("object");
+                                        do{
+                                            std::string objectType;
+                                            if(object->Attribute("type")){
+                                                objectType = object->Attribute("type");
+                                            }else{
+                                                std::cout << "Object type not defined. Creating sphere." << std::endl;
+                                                objectType = "sphere";
+                                            }
+                                            if(std::strcmp(objectType.c_str(),"sphere") == 0){
+                                                double radius = 1;
+                                                point3 center(0,0,0);
+                                                if(object->Attribute("radius"))
+                                                    radius = std::stod(object->Attribute("radius"));
+                                                else
+                                                    std::cout << "No radius specified. Setting to default." << std::endl;
+                                                if(object->Attribute("center")){
+                                                    auto aux = object->Attribute("center");
+                                                    point3 p(0, 0, 0);
+                                                    auto token = std::strtok(const_cast<char *>(aux), " ");
+                                                    auto i = 0;
+                                                    while (token != nullptr) {
+                                                        try {
+                                                            p[i] = std::stod(token);
+                                                            token = std::strtok(nullptr, " ");
+                                                            i++;
+                                                        } catch (std::exception &e) {
+                                                            std::cout << "Failed to retrieve sphere center. Setting to default value"
+                                                                      << std::endl;
+                                                        }
+                                                    }
+                                                    center = p;
+                                                }else{
+                                                    std::cout << "Failed to retrieve sphere center. Setting to default values"
+                                                              << std::endl;
+                                                }
+                                                auto* s = new Sphere(center,radius,integrator);
+                                                s->setMaterial(*material);
+                                                ro.objects.push_back(s);
+                                            }
+                                            object = object->NextSiblingElement();
+                                        }while(object != nullptr);
+                                    }
+                                    materialElement = materialElement->NextSiblingElement();
+                                }while(materialElement != nullptr);
+
+                            }else{
+                               /* //Objects
+                                if(RT3->FirstChildElement("object")){
+                                    auto object = RT3->FirstChildElement("object");
+                                    while(object->NextSiblingElement() != nullptr){
+                                        std::string objectType;
+                                        if(object->Attribute("type")){
+                                            objectType = object->Attribute("type");
+                                        }else{
+                                            std::cout << "Object type not defined. Creating sphere." << std::endl;
+                                            objectType = "sphere";
+                                        }
+                                        if(std::strcmp(objectType.c_str(),"sphere") == 0){
+                                            double radius = 1;
+                                            point3 center(0,0,0);
+                                            if(object->Attribute("radius"))
+                                                radius = std::stod(object->Attribute("radius"));
+                                            else
+                                                std::cout << "No radius specified. Setting to default." << std::endl;
+                                            if(object->Attribute("center")){
+                                                std::string aux = object->Attribute("center");
+                                                point3 p(0, 0, 0);
+                                                char *token = std::strtok(const_cast<char *>(aux.c_str()), " ");
+                                                int i = 0;
+                                                while (token != nullptr) {
+                                                    try {
+                                                        p[i] = std::stod(token);
+                                                        token = std::strtok(nullptr, " ");
+                                                        i++;
+                                                    } catch (std::exception &e) {
+                                                        std::cout << "Failed to retrieve sphere center. Setting to default value"
+                                                                  << std::endl;
+                                                    }
+                                                }
+                                                center = p;
+                                            }else{
+                                                std::cout << "Failed to retrieve sphere center. Setting to default values"
+                                                          << std::endl;
+                                            }
+                                            auto* s = new Sphere(center,radius,ro.materialColor);
+                                            ro.objects.push_back(s);
+                                        }
+                                        object = object->NextSiblingElement();
+                                    }
+                                }*/
+                            }
+                            /*if(RT3->FirstChildElement("material")){
                                 if(RT3->FirstChildElement("material")->Attribute("type"))
                                     ro.materialType = RT3->FirstChildElement("material")->Attribute("type");
                                 else
@@ -214,7 +325,7 @@ public:
                                     }
                                     object = object->NextSiblingElement();
                                 }
-                            }
+                            }*/
                             return ro;
                         }else{
                             throw std::invalid_argument("Unable to open Scene File");

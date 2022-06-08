@@ -1,33 +1,19 @@
-#include "color.h"
-#include "ray.h"
-#include "vec3.h"
-#include "parcer.h"
-#include "primitive.h"
-#include "sphere.h"
+#include "../includes/Vector/color.h"
+#include "../includes/Vector/ray.h"
+#include "../includes/Vector/vec3.h"
+#include "../includes/RTUtilities/parcer.h"
+#include "../includes/RTEngine/primitive.h"
+#include "../includes/RTEngine/sphere.h"
+#include "../includes/RTEngine/Integrator.h"
+#include "../includes/RTEngine/DepthMapIntegrator.h"
+#include "../includes/RTUtilities/RunningOptions.h"
 
 #include <iostream>
 #include <fstream>
 
-color ray_color(const ray& r, const std::vector<Primitive*>& shapes, const std::string& cameraType, color tr, color tl, color br, color bl) {
-    for(auto shape : shapes){
-        if(shape->intersects(r)){
-            return shape->getColor()/255;
-        }
-    }
-    vec3 unit_direction;
-    if(std::strcmp(cameraType.c_str(), "orthographic")==0)
-        unit_direction = unit_vector(r.origin());
-    else
-        unit_direction = unit_vector(r.direction());
-    auto t = 0.5*(unit_direction.y() + 1.0);
-    color c1 = (1.0-t)*bl + t*tr;
-    color c2 = (1.0-t)*br + t*tl;
-    auto h = 0.5*(unit_direction.x() + 1.0);
-    return (1.0-h)*c1 + h*c2;
-}
-
 int main(int argc, char* argv[]) {
     struct RunningOptions ro;
+    FlatIntegrator fi;
     try {
         ro = Parser::parse(argc, argv);
     }catch(std::exception& e){
@@ -45,7 +31,7 @@ int main(int argc, char* argv[]) {
 
     // Camera
 
-    auto viewport_height = 5.0;
+    auto viewport_height = 2.0;
     auto viewport_width = aspect_ratio * viewport_height;
     auto focal_length = -1;
 
@@ -65,8 +51,7 @@ int main(int argc, char* argv[]) {
                 auto u = double(i) / (image_width - 1);
                 auto v = double(j) / (image_height - 1);
                 ray r(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-                color pixel_color = ray_color(r, ro.objects, ro.cameraType, ro.backgroundTr / 255, ro.backgroundTl / 255,
-                                              ro.backgroundBr / 255, ro.backgroundBl / 255);
+                color pixel_color = fi.ray_color(r, ro);
                 write_color(file, pixel_color);
             }
         }
@@ -77,8 +62,7 @@ int main(int argc, char* argv[]) {
                 auto u = double(i) / (image_width - 1);
                 auto v = double(j) / (image_height - 1);
                 ray r(lower_left_corner + u * horizontal + v * vertical - origin, point3(0, 0, 1));
-                color pixel_color = ray_color(r, ro.objects, ro.cameraType, ro.backgroundTr / 255, ro.backgroundTl / 255,
-                                              ro.backgroundBr / 255, ro.backgroundBl / 255);
+                color pixel_color = fi.ray_color(r, ro);
                 write_color(file, pixel_color);
             }
         }
@@ -88,4 +72,5 @@ int main(int argc, char* argv[]) {
     file.close();
 
     std::cerr << "\nDone.\n";
+    return 0;
 }

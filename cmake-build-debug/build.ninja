@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/
+cmake_ninja_workdir = /home/gabriel/CLionProjects/ray-tracing/cmake-build-debug/
 # =============================================================================
 # Object build statements for EXECUTABLE target RT
 
@@ -49,17 +49,17 @@ cmake_ninja_workdir = /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug/
 
 build cmake_object_order_depends_target_RT: phony || CMakeFiles/RT.dir
 
-build CMakeFiles/RT.dir/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/Ray-Tracing/main.cpp || cmake_object_order_depends_target_RT
-  DEP_FILE = CMakeFiles/RT.dir/main.cpp.o.d
-  FLAGS = -g
+build CMakeFiles/RT.dir/source/main.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/ray-tracing/source/main.cpp || cmake_object_order_depends_target_RT
+  DEP_FILE = CMakeFiles/RT.dir/source/main.cpp.o.d
+  FLAGS = -g -std=gnu++14
   OBJECT_DIR = CMakeFiles/RT.dir
-  OBJECT_FILE_DIR = CMakeFiles/RT.dir
+  OBJECT_FILE_DIR = CMakeFiles/RT.dir/source
 
-build CMakeFiles/RT.dir/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/Ray-Tracing/tinyxml2.cpp || cmake_object_order_depends_target_RT
-  DEP_FILE = CMakeFiles/RT.dir/tinyxml2.cpp.o.d
-  FLAGS = -g
+build CMakeFiles/RT.dir/source/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLionProjects/ray-tracing/source/tinyxml2.cpp || cmake_object_order_depends_target_RT
+  DEP_FILE = CMakeFiles/RT.dir/source/tinyxml2.cpp.o.d
+  FLAGS = -g -std=gnu++14
   OBJECT_DIR = CMakeFiles/RT.dir
-  OBJECT_FILE_DIR = CMakeFiles/RT.dir
+  OBJECT_FILE_DIR = CMakeFiles/RT.dir/source
 
 
 # =============================================================================
@@ -69,7 +69,7 @@ build CMakeFiles/RT.dir/tinyxml2.cpp.o: CXX_COMPILER__RT_Debug /home/gabriel/CLi
 #############################################
 # Link the executable RT
 
-build RT: CXX_EXECUTABLE_LINKER__RT_Debug CMakeFiles/RT.dir/main.cpp.o CMakeFiles/RT.dir/tinyxml2.cpp.o
+build RT: CXX_EXECUTABLE_LINKER__RT_Debug CMakeFiles/RT.dir/source/main.cpp.o CMakeFiles/RT.dir/source/tinyxml2.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/RT.dir
   POST_BUILD = :
@@ -82,7 +82,7 @@ build RT: CXX_EXECUTABLE_LINKER__RT_Debug CMakeFiles/RT.dir/main.cpp.o CMakeFile
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug && /snap/clion/190/bin/cmake/linux/bin/ccmake -S/home/gabriel/CLionProjects/Ray-Tracing -B/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+  COMMAND = cd /home/gabriel/CLionProjects/ray-tracing/cmake-build-debug && /home/gabriel/clion-2022.1.2/bin/cmake/linux/bin/ccmake -S/home/gabriel/CLionProjects/ray-tracing -B/home/gabriel/CLionProjects/ray-tracing/cmake-build-debug
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -94,7 +94,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug && /snap/clion/190/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/Ray-Tracing -B/home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+  COMMAND = cd /home/gabriel/CLionProjects/ray-tracing/cmake-build-debug && /home/gabriel/clion-2022.1.2/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/gabriel/CLionProjects/ray-tracing -B/home/gabriel/CLionProjects/ray-tracing/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -110,7 +110,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+# Folder: /home/gabriel/CLionProjects/ray-tracing/cmake-build-debug
 
 build all: phony RT
 
@@ -121,14 +121,14 @@ build all: phony RT
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCCompiler.cmake CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCCompiler.cmake CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /snap/clion/190/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCCompiler.cmake CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake: phony
+build ../CMakeLists.txt /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-C.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-C.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /home/gabriel/clion-2022.1.2/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCCompiler.cmake CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake: phony
 
 
 #############################################

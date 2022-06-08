@@ -1,4 +1,4 @@
-/snap/clion/190/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/190/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/Ray-Tracing -B /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+/home/gabriel/clion-2022.1.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/gabriel/clion-2022.1.2/bin/ninja/linux/ninja -G Ninja -S /home/gabriel/CLionProjects/ray-tracing -B /home/gabriel/CLionProjects/ray-tracing/cmake-build-debug
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/gabriel/CLionProjects/Ray-Tracing/cmake-build-debug
+-- Build files have been written to: /home/gabriel/CLionProjects/ray-tracing/cmake-build-debug
