@@ -5,9 +5,9 @@
 #ifndef RT_PRIMITIVE_H
 #define RT_PRIMITIVE_H
 
-#include "../Vector/ray.h"
-#include "Material.h"
-#include "Integrator.h"
+#include "../../Vector/ray.h"
+#include "../Materials/Material.h"
+#include "../Integrators/Integrator.h"
 
 class Primitive{
 protected:
@@ -38,6 +38,10 @@ public:
 
     virtual void setColor(const color& col_){
         this->material.setCol(col_);
+    }
+
+    void get_material() {
+
     }
 };
 

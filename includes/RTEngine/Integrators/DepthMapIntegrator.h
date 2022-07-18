@@ -6,7 +6,7 @@
 #define RT_DEPTHMAPINTEGRATOR_H
 
 #include "Integrator.h"
-#include "../RTUtilities/parcer.h"
+#include "../../RTUtilities/parcer.h"
 
 class DepthMapIntegrator : public Integrator{
 public:

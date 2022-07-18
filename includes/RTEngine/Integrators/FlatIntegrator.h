@@ -7,7 +7,7 @@
 
 #include <cstring>
 #include "Integrator.h"
-#include "../RTUtilities/RunningOptions.h"
+#include "../../RTUtilities/RunningOptions.h"
 
 class FlatIntegrator : public Integrator{
 public:

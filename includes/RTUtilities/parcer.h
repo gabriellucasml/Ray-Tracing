@@ -9,12 +9,12 @@
 #include <sstream>
 #include <vector>
 #include "tinyxml2.h"
-#include "../RTEngine/primitive.h"
-#include "../RTEngine/sphere.h"
-#include "../RTEngine/Integrator.h"
-#include "../RTEngine/FlatIntegrator.h"
-#include "../RTEngine/DepthMapIntegrator.h"
-#include "../RTEngine/NormalMapIntegrator.h"
+#include "../RTEngine/Objects/primitive.h"
+#include "../RTEngine/Objects/sphere.h"
+#include "../RTEngine/Integrators/Integrator.h"
+#include "../RTEngine/Integrators/FlatIntegrator.h"
+#include "../RTEngine/Integrators/DepthMapIntegrator.h"
+#include "../RTEngine/Materials/NormalMapIntegrator.h"
 #include "../RTUtilities/RunningOptions.h"
 
 

@@ -7,7 +7,9 @@
 
 #include <string>
 #include "../Vector/color.h"
-#include "../RTEngine/primitive.h"
+#include "../RTEngine/Objects/primitive.h"
+#include "../RTEngine/Lights/light.hpp"
+#include "../RTEngine/Lights/ambient.hpp"
 
 const struct RunningOptions{
     bool  help = false;
@@ -15,6 +17,8 @@ const struct RunningOptions{
     int fovy = 1;
     std::vector<int> screen_window{1,1,1,1};
     std::vector<Primitive*> objects;
+    std::vector<std::shared_ptr<Light>>lights;
+    AmbientLight * ambient = nullptr;
     std::string filmType;
     int filmX_res = 0;
     int filmY_res = 0;
@@ -27,6 +31,7 @@ const struct RunningOptions{
     color backgroundBr = color(0,0,0);
     color backgroundTl = color(0,0,0);
     color backgroundTr = color(0,0,0);
+    std::string integratorType;
 } RunningOptions;
 
 #endif //RT_RUNNINGOPTIONS_H

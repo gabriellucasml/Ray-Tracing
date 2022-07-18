@@ -48,11 +48,24 @@ public:
 public:
     double e[3];
 
+    bool isBlack() {
+        return this->e[0]==0 &&  this->e[1]==0 && this->e[2] == 0;
+    }
 };
 
 // Type aliases for vec3
 using point3 = vec3;   // 3D point
 using color = vec3;    // RGB color
+
+inline bool operator==(const vec3 &v1, const vec3 &v2){
+    if(v1.e[0]==v2.e[0] && v1.e[1]==v2.e[1] && v1.e[2]==v2.e[2])
+        return true;
+}
+
+inline bool operator!=(const vec3 &v1, const vec3 &v2){
+    if(v1.e[0]==v2.e[0] && v1.e[1]==v2.e[1] && v1.e[2]==v2.e[2])
+        return false;
+}
 
 inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
@@ -96,6 +109,36 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
+}
+
+inline vec3 normalize(const vec3 &v)
+{
+    float sq_v1 = v.e[0] * v.e[0];
+    float sq_v2 = v.e[1] * v.e[1];
+    float sq_v3 = v.e[2] * v.e[2];
+
+    float root = sqrt(sq_v1 + sq_v2 + sq_v3);
+
+    float r_v1 = v.e[0] / root;
+    float r_v2 = v.e[1] / root;
+    float r_v3 = v.e[2] / root;
+
+    return vec3(r_v1, r_v2, r_v3);
+}
+
+inline float magnitude(const vec3 &v){
+    float sq_v1 = v.e[0] * v.e[0];
+    float sq_v2 = v.e[1] * v.e[1];
+    float sq_v3 = v.e[2] * v.e[2];
+
+    float root = sqrt(sq_v1 + sq_v2 + sq_v3);
+    return root;
+}
+
+inline float cosAnguloVetores(const vec3 &v1, const vec3 &v2){
+    float cim = v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v2.e[2];
+    float bai = v1.length() * v2.length();
+    return cim/bai;
 }
 
 #endif

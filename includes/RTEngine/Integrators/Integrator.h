@@ -6,9 +6,9 @@
 #define RT_INTEGRATOR_H
 
 #include <vector>
-#include "../Vector/ray.h"
-#include "primitive.h"
-#include "../RTUtilities/parcer.h"
+#include "../../Vector/ray.h"
+#include "../Objects/primitive.h"
+#include "../../RTUtilities/parcer.h"
 
 class Integrator{
 public:

@@ -1,3 +1,3 @@
-/home/gabriel/CLionProjects/ray-tracing/cmake-build-debug/CMakeFiles/RT.dir
-/home/gabriel/CLionProjects/ray-tracing/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/gabriel/CLionProjects/ray-tracing/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/Files/UFRN/CG/Ray-Tracing/cmake-build-debug/CMakeFiles/RT.dir
+D:/Files/UFRN/CG/Ray-Tracing/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Files/UFRN/CG/Ray-Tracing/cmake-build-debug/CMakeFiles/rebuild_cache.dir

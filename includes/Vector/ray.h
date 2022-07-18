@@ -20,6 +20,8 @@ public:
 public:
     point3 orig;
     vec3 dir;
+    float tmin;
+    float tmax;
 };
 
 #endif

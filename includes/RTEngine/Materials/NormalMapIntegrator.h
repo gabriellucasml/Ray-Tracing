@@ -5,8 +5,8 @@
 #ifndef RT_NORMALMAPINTEGRATOR_H
 #define RT_NORMALMAPINTEGRATOR_H
 
-#include "Integrator.h"
-#include "../RTUtilities/parcer.h"
+#include "../Integrators/Integrator.h"
+#include "../../RTUtilities/parcer.h"
 
 class NormalMapIntegrator : public Integrator{
 public:

@@ -18,17 +18,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a665fd4c-c49a-4ee5-8c6e-12b6e0f622cb" name="Changes" comment="Implementation of orthographic camera">
-      <change afterPath="$PROJECT_DIR$/Scene Files/scene_05.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/RTEngine/DepthMapIntegrator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/RTEngine/FlatIntegrator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Integrator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Material.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/RTEngine/NormalMapIntegrator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/RTUtilities/RunningOptions.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Integrators/BlinnPhongIntegrator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Lights/ambient.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Lights/directional.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Lights/light.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Lights/point.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Lights/spot.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Materials/BlinnPhongMaterial.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Objects/Surfel.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Objects/bounds3.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Scene/Ambient.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Scene/Background.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Scene/Camera.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Scene/Film.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/RTEngine/Scene/Scene.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_12_22_8_46_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_12_22_8_46_PM__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scene Files/scene_03.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Scene Files/scene_03.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scene Files/scene_04.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Scene Files/scene_04.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/directory-.-Debug-f5ebdc15457944623624.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
@@ -37,27 +44,28 @@
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CMakeSystem.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.out" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.out" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdC/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.22.3/CompilerIdCXX/a.out" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RT.dir/main.cpp.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/RT" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/RT" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/color.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/Vector/color.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/source/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parcer.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTUtilities/parcer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/primitive.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/primitive.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ray.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/Vector/ray.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphere.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/sphere.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinyxml2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/source/tinyxml2.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinyxml2.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTUtilities/tinyxml2.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vec3.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/Vector/vec3.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/DepthMapIntegrator.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Integrators/DepthMapIntegrator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/FlatIntegrator.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Integrators/FlatIntegrator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/Integrator.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Integrators/Integrator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/Material.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Materials/Material.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/NormalMapIntegrator.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Materials/NormalMapIntegrator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/primitive.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Objects/primitive.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTEngine/sphere.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTEngine/Objects/sphere.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTUtilities/RunningOptions.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTUtilities/RunningOptions.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/RTUtilities/parcer.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/RTUtilities/parcer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/Vector/ray.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/Vector/ray.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/Vector/vec3.h" beforeDir="false" afterPath="$PROJECT_DIR$/includes/Vector/vec3.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/source/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,41 +100,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cmake.loaded.for.project&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/gabriel/CLionProjects/Ray-Tracing/CMakeLists.txt&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "cmake.loaded.for.project": "true",
+    "last_opened_file_path": "D:/Files/UFRN/CG/Ray-Tracing/includes/RTEngine/Lights",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.customizations"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Files\UFRN\CG\Ray-Tracing\includes\RTEngine\Lights" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Files\UFRN\CG\Ray-Tracing\includes\RTEngine\Materials" />
+      <recent name="D:\Files\UFRN\CG\Ray-Tracing\includes\RTEngine\Objects" />
+      <recent name="D:\Files\UFRN\CG\Ray-Tracing\includes\RTEngine\Integrators" />
       <recent name="$PROJECT_DIR$/includes/RTUtilities" />
       <recent name="$PROJECT_DIR$/includes/RTEngine" />
-      <recent name="$PROJECT_DIR$/includes/Vector" />
-      <recent name="$PROJECT_DIR$/source" />
-      <recent name="$PROJECT_DIR$/includes" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="RT" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="&quot;$PROJECT_DIR$/Scene Files/scene_05.xml&quot;" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="RT" TARGET_NAME="RT" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="RT" RUN_TARGET_NAME="RT">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="RT" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="&quot;$PROJECT_DIR$/Scene Files/scene_05.xml&quot;" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="RT" TARGET_NAME="RT" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="RT" RUN_TARGET_NAME="RT">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -154,6 +165,8 @@
       <workItem from="1653571393952" duration="1010000" />
       <workItem from="1654599935555" duration="14373000" />
       <workItem from="1654645967258" duration="579000" />
+      <workItem from="1657852333478" duration="21000" />
+      <workItem from="1658153354991" duration="7262000" />
     </task>
     <task id="LOCAL-00001" summary="Test: Parser v0.1">
       <created>1652398904455</created>
@@ -207,7 +220,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="HEAD" />
                       </list>
                     </value>
                   </entry>
@@ -226,22 +239,5 @@
     <MESSAGE value="Parser v0.2" />
     <MESSAGE value="Implementation of orthographic camera" />
     <option name="LAST_COMMIT_MESSAGE" value="Implementation of orthographic camera" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/includes/RTUtilities/parcer.h</url>
-          <line>134</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="unit_direction" />
-        <watch expression="t" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

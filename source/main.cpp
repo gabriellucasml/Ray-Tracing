@@ -2,10 +2,10 @@
 #include "../includes/Vector/ray.h"
 #include "../includes/Vector/vec3.h"
 #include "../includes/RTUtilities/parcer.h"
-#include "../includes/RTEngine/primitive.h"
-#include "../includes/RTEngine/sphere.h"
-#include "../includes/RTEngine/Integrator.h"
-#include "../includes/RTEngine/DepthMapIntegrator.h"
+#include "../includes/RTEngine/Objects/primitive.h"
+#include "../includes/RTEngine/Objects/sphere.h"
+#include "../includes/RTEngine/Integrators/Integrator.h"
+#include "../includes/RTEngine/Integrators/DepthMapIntegrator.h"
 #include "../includes/RTUtilities/RunningOptions.h"
 
 #include <iostream>
